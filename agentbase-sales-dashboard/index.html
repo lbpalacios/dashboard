@@ -165,14 +165,12 @@
 
         function saveData() {
             localStorage.setItem('agentbase_leads', JSON.stringify(leads));
-            console.log("Datos guardados:", leads);
         }
 
         function loadData() {
             const saved = localStorage.getItem('agentbase_leads');
             if (saved) {
                 leads = JSON.parse(saved);
-                console.log("Datos cargados:", leads);
             }
         }
 
@@ -286,10 +284,12 @@
             document.getElementById('progress-closes').innerText = `${closedCount} / 2`;
         }
 
-        window.onload = function() {
+        function init() {
             loadData();
             updateAll();
         }
+
+        window.onload = init;
     </script>
 </body>
 </html>
