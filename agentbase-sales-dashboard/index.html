@@ -164,11 +164,11 @@
         let leads = [];
 
         function saveData() {
-            localStorage.setItem('agentbase_leads', JSON.stringify(leads));
+            localStorage.setItem("agentbase_leads", JSON.stringify(leads));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('agentbase_leads');
+            const saved = localStorage.getItem("agentbase_leads");
             if (saved) {
                 leads = JSON.parse(saved);
             }
@@ -182,11 +182,11 @@
         }
 
         function updateKPIs() {
-            const closed = leads.filter(l => l.stage === 'Cerrado');
+            const closed = leads.filter(l => l.stage === "Cerrado");
             
-            document.getElementById('kpi-contacts').innerText = leads.length;
-            document.getElementById('kpi-meetings').innerText = leads.filter(l => l.stage === 'Reunión').length;
-            document.getElementById('kpi-closes').innerText = closed.length;
+            document.getElementById("kpi-contacts").innerText = leads.length;
+            document.getElementById("kpi-meetings").innerText = leads.filter(l => l.stage === "Reunión").length;
+            document.getElementById("kpi-closes").innerText = closed.length;
 
             let installComm = 0;
             let recurringComm = 0;
@@ -197,25 +197,25 @@
                 recurringComm += monthly;
             });
 
-            document.getElementById('comm-install').innerText = '$' + installComm.toLocaleString();
-            document.getElementById('comm-recurring').innerText = '$' + Math.round(recurringComm).toLocaleString();
-            document.getElementById('comm-total').innerText = '$' + (installComm + Math.round(recurringComm)).toLocaleString();
+            document.getElementById("comm-install").innerText = "$" + installComm.toLocaleString();
+            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurringComm).toLocaleString();
+            document.getElementById("comm-total").innerText = "$" + (installComm + Math.round(recurringComm)).toLocaleString();
         }
 
         function renderPipeline() {
-            const tbody = document.getElementById('pipeline-body');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById("pipeline-body");
+            tbody.innerHTML = "";
 
             if (leads.length === 0) {
-                const row = document.createElement('tr');
+                const row = document.createElement("tr");
                 row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads todavía.</td>`;
                 tbody.appendChild(row);
                 return;
             }
 
             leads.forEach((lead, index) => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-zinc-900/50';
+                const row = document.createElement("tr");
+                row.className = "hover:bg-zinc-900/50";
                 row.innerHTML = `
                     <td class="px-6 py-4 font-medium">${lead.name}</td>
                     <td class="px-6 py-4 text-zinc-400">${lead.industry}</td>
@@ -223,9 +223,9 @@
                         <span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span>
                     </td>
                     <td class="px-4 py-4 text-right">
-                        ${lead.stage !== 'Cerrado' ? 
+                        ${lead.stage !== "Cerrado" ? 
                             `<button onclick="advanceStage(${index})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
-                            `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? '+ Inst' : ''}</span>`
+                            `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? "+ Inst" : ""}</span>`
                         }
                     </td>
                 `;
@@ -250,7 +250,7 @@
 
             if (stages[nextIndex] === "Cerrado") {
                 currentLeadIndex = index;
-                document.getElementById('close-modal').classList.remove('hidden');
+                document.getElementById("close-modal").classList.remove("hidden");
             } else {
                 leads[index].stage = stages[nextIndex];
                 updateAll();
@@ -258,34 +258,37 @@
         }
 
         function confirmClose() {
-            const plan = document.getElementById('plan-select').value;
-            const hasInstall = document.getElementById('install-check').checked;
+            const plan = document.getElementById("plan-select").value;
+            const hasInstall = document.getElementById("install-check").checked;
 
             leads[currentLeadIndex].stage = "Cerrado";
             leads[currentLeadIndex].plan = plan;
             leads[currentLeadIndex].install = hasInstall;
 
-            document.getElementById('close-modal').classList.add('hidden');
+            document.getElementById("close-modal").classList.add("hidden");
             updateAll();
         }
 
         function closeModal() {
-            document.getElementById('close-modal').classList.add('hidden');
+            document.getElementById("close-modal").classList.add("hidden");
         }
 
         function updateProgress() {
             const contactPercent = Math.min((leads.length / 150) * 100, 100);
-            document.getElementById('bar-contacts').style.width = contactPercent + '%';
-            document.getElementById('progress-contacts').innerText = `${leads.length} / 150`;
+            document.getElementById("bar-contacts").style.width = contactPercent + "%";
+            document.getElementById("progress-contacts").innerText = `${leads.length} / 150`;
 
-            const closedCount = leads.filter(l => l.stage === 'Cerrado').length;
+            const closedCount = leads.filter(l => l.stage === "Cerrado").length;
             const closePercent = Math.min((closedCount / 2) * 100, 100);
-            document.getElementById('bar-closes').style.width = closePercent + '%';
-            document.getElementById('progress-closes').innerText = `${closedCount} / 2`;
+            document.getElementById("bar-closes").style.width = closePercent + "%";
+            document.getElementById("progress-closes").innerText = `${closedCount} / 2`;
         }
 
         function init() {
-            loadData();
+            const saved = localStorage.getItem("agentbase_leads");
+            if (saved) {
+                leads = JSON.parse(saved);
+            }
             updateAll();
         }
 
