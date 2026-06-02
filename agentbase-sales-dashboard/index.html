@@ -132,7 +132,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Cerrar Lead -->
     <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-semibold mb-5">Cerrar Lead</h3>
@@ -160,12 +160,25 @@
         </div>
     </div>
 
+    <!-- Modal Notas -->
+    <div id="notes-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
+            <h3 class="text-lg font-semibold mb-4">Notas del Lead</h3>
+            <textarea id="notes-text" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm" placeholder="Escribe tus notas aquí..."></textarea>
+            
+            <div class="flex gap-x-3 mt-4">
+                <button onclick="closeNotesModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
+                <button onclick="saveNotes()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-2xl text-sm font-semibold">Guardar Notas</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let leads = [];
+        let currentNotesIndex = null;
 
         function saveData() {
             localStorage.setItem("agentbase_leads", JSON.stringify(leads));
-            document.getElementById("last-saved").innerText = "Guardado: " + new Date().toLocaleTimeString();
         }
 
         function loadData() {
@@ -215,6 +228,7 @@
             }
 
             leads.forEach((lead, index) => {
+                const hasNotes = lead.notes && lead.notes.trim() !== "";
                 const row = document.createElement("tr");
                 row.className = "hover:bg-zinc-900/50";
                 row.innerHTML = `
@@ -224,10 +238,15 @@
                         <span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span>
                     </td>
                     <td class="px-4 py-4 text-right">
-                        ${lead.stage !== "Cerrado" ? 
-                            `<button onclick="advanceStage(${index})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
-                            `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? "+ Inst" : ""}</span>`
-                        }
+                        <div class="flex items-center justify-end gap-x-2">
+                            <button onclick="openNotes(${index})" class="text-xs px-2 py-1 rounded-lg hover:bg-zinc-800 text-zinc-400">
+                                <i class="fa-solid fa-sticky-note ${hasNotes ? 'text-emerald-400' : ''}"></i>
+                            </button>
+                            ${lead.stage !== "Cerrado" ? 
+                                `<button onclick="advanceStage(${index})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
+                                `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? "+ Inst" : ""}</span>`
+                            }
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -238,7 +257,7 @@
             const name = prompt("Nombre del lead:");
             if (!name) return;
             const industry = prompt("Industria:", "Inmobiliaria");
-            leads.push({ name, industry: industry || "General", stage: "Contactado" });
+            leads.push({ name, industry: industry || "General", stage: "Contactado", notes: "" });
             updateAll();
         }
 
@@ -274,6 +293,24 @@
             document.getElementById("close-modal").classList.add("hidden");
         }
 
+        // Notas
+        function openNotes(index) {
+            currentNotesIndex = index;
+            document.getElementById("notes-text").value = leads[index].notes || "";
+            document.getElementById("notes-modal").classList.remove("hidden");
+        }
+
+        function saveNotes() {
+            const text = document.getElementById("notes-text").value;
+            leads[currentNotesIndex].notes = text;
+            document.getElementById("notes-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeNotesModal() {
+            document.getElementById("notes-modal").classList.add("hidden");
+        }
+
         function updateProgress() {
             const contactPercent = Math.min((leads.length / 150) * 100, 100);
             document.getElementById("bar-contacts").style.width = contactPercent + "%";
@@ -291,12 +328,6 @@
                 leads = JSON.parse(saved);
             }
             updateAll();
-            
-            // Mostrar última vez guardado
-            const lastSaved = localStorage.getItem("agentbase_last_saved");
-            if (lastSaved) {
-                document.getElementById("last-saved").innerText = "Último guardado: " + lastSaved;
-            }
         }
 
         window.onload = init;
