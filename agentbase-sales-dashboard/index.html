@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentbase • Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
@@ -109,16 +108,8 @@
                 </div>
             </div>
 
-            <!-- Gráfica -->
-            <div class="lg:col-span-2">
-                <div class="font-semibold text-xl mb-4 px-1">Actividad Semanal</div>
-                <div class="dashboard-card p-6">
-                    <canvas id="activityChart" height="90"></canvas>
-                </div>
-            </div>
-
             <!-- Progreso -->
-            <div>
+            <div class="lg:col-span-3">
                 <div class="font-semibold text-xl mb-4 px-1">Progreso Semanal</div>
                 <div class="dashboard-card p-6 space-y-6 text-sm">
                     <div>
@@ -174,12 +165,14 @@
 
         function saveData() {
             localStorage.setItem('agentbase_leads', JSON.stringify(leads));
+            console.log("Datos guardados:", leads);
         }
 
         function loadData() {
             const saved = localStorage.getItem('agentbase_leads');
             if (saved) {
                 leads = JSON.parse(saved);
+                console.log("Datos cargados:", leads);
             }
         }
 
