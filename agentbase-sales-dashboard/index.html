@@ -165,6 +165,7 @@
 
         function saveData() {
             localStorage.setItem("agentbase_leads", JSON.stringify(leads));
+            document.getElementById("last-saved").innerText = "Guardado: " + new Date().toLocaleTimeString();
         }
 
         function loadData() {
@@ -290,6 +291,12 @@
                 leads = JSON.parse(saved);
             }
             updateAll();
+            
+            // Mostrar última vez guardado
+            const lastSaved = localStorage.getItem("agentbase_last_saved");
+            if (lastSaved) {
+                document.getElementById("last-saved").innerText = "Último guardado: " + lastSaved;
+            }
         }
 
         window.onload = init;
