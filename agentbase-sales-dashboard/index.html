@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentbase • Sales Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .metric-card { transition: transform 0.2s; }
+        .metric-card:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Header -->
+    <div class="border-b border-zinc-800 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-robot text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-semibold tracking-tight">Agentbase</h1>
+                    <p class="text-xs text-zinc-500 -mt-1">Sales Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-x-2 text-sm">
+                <div class="px-3 py-1.5 bg-zinc-800 rounded-lg text-emerald-400 text-xs font-medium flex items-center gap-x-1.5">
+                    <i class="fa-solid fa-circle text-[8px]"></i>
+                    <span>Activo</span>
+                </div>
+                <div class="text-zinc-400 text-sm">lbpalacios</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- KPIs Summary -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-x-2">
+                <i class="fa-solid fa-chart-line text-emerald-400"></i> 
+                KPIs de esta semana
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="metric-card bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                    <div class="text-zinc-400 text-sm">Contactos nuevos</div>
+                    <div class="text-3xl font-semibold mt-1">0</div>
+                    <div class="text-emerald-400 text-xs mt-2">Meta: 30</div>
+                </div>
+                <div class="metric-card bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                    <div class="text-zinc-400 text-sm">Reuniones agendadas</div>
+                    <div class="text-3xl font-semibold mt-1">0</div>
+                    <div class="text-emerald-400 text-xs mt-2">Meta: 8</div>
+                </div>
+                <div class="metric-card bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                    <div class="text-zinc-400 text-sm">Cierres esta semana</div>
+                    <div class="text-3xl font-semibold mt-1">0</div>
+                    <div class="text-emerald-400 text-xs mt-2">Meta: 2</div>
+                </div>
+                <div class="metric-card bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                    <div class="text-zinc-400 text-sm">Ingresos (instalaciones)</div>
+                    <div class="text-3xl font-semibold mt-1">$0</div>
+                    <div class="text-emerald-400 text-xs mt-2">Meta: $10,000</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold flex items-center gap-x-2">
+                    <i class="fa-solid fa-funnel-dollar text-emerald-400"></i> 
+                    Pipeline
+                </h2>
+                <button onclick="addLead()" 
+                        class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 transition-colors text-sm font-medium rounded-xl flex items-center gap-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Agregar Lead</span>
+                </button>
+            </div>
+            
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-zinc-950">
+                        <tr class="text-xs text-zinc-400">
+                            <th class="text-left py-3 px-6 font-medium">Lead</th>
+                            <th class="text-left py-3 px-4 font-medium">Industria</th>
+                            <th class="text-left py-3 px-4 font-medium">Etapa</th>
+                            <th class="text-left py-3 px-4 font-medium">Último contacto</th>
+                            <th class="text-right py-3 px-6 font-medium">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pipeline-body" class="text-sm divide-y divide-zinc-800">
+                        <!-- Dynamic rows added via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            
+            <!-- Actividad Diaria -->
+            <div>
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-x-2">
+                    <i class="fa-solid fa-calendar-day text-emerald-400"></i> 
+                    Actividad de hoy
+                </h2>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-sm">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-400">Contactos realizados</span>
+                            <span class="font-medium">0 / 30</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-400">Seguimientos</span>
+                            <span class="font-medium">0 / 15</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-400">Reuniones agendadas</span>
+                            <span class="font-medium">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div>
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-x-2">
+                    <i class="fa-solid fa-tachometer-alt text-emerald-400"></i> 
+                    Progreso semanal
+                </h2>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 text-sm">
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-zinc-400">Cierres</span>
+                                <span>0 / 2</span>
+                            </div>
+                            <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                <div class="h-2 bg-emerald-500 w-0 rounded-full"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-zinc-400">Contactos</span>
+                                <span>0 / 150</span>
+                            </div>
+                            <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                <div class="h-2 bg-emerald-500 w-0 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Simple pipeline data
+        let leads = [];
+
+        function renderPipeline() {
+            const tbody = document.getElementById('pipeline-body');
+            tbody.innerHTML = '';
+            
+            if (leads.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="5" class="px-6 py-8 text-center text-zinc-500 text-sm">
+                        No hay leads todavía. Haz clic en "Agregar Lead" para empezar.
+                    </td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
+
+            leads.forEach((lead, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-zinc-800/50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-medium">${lead.name}</td>
+                    <td class="px-4 py-4 text-zinc-400">${lead.industry}</td>
+                    <td class="px-4 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span>
+                    </td>
+                    <td class="px-4 py-4 text-zinc-400">${lead.lastContact}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="updateStage(${index})" class="text-xs px-3 py-1.5 hover:bg-zinc-800 rounded-lg transition-colors">Actualizar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function addLead() {
+            const name = prompt("Nombre del lead:");
+            if (!name) return;
+            
+            const industry = prompt("Industria:", "Inmobiliaria");
+            const stage = prompt("Etapa actual:", "Contactado");
+            
+            leads.push({
+                name: name,
+                industry: industry || "General",
+                stage: stage || "Contactado",
+                lastContact: new Date().toLocaleDateString()
+            });
+            
+            renderPipeline();
+        }
+
+        function updateStage(index) {
+            const newStage = prompt("Nueva etapa:", leads[index].stage);
+            if (newStage) {
+                leads[index].stage = newStage;
+                leads[index].lastContact = new Date().toLocaleDateString();
+                renderPipeline();
+            }
+        }
+
+        // Initialize
+        window.onload = function() {
+            renderPipeline();
+        }
+    </script>
+</body>
+</html>
