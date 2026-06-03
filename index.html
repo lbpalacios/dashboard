@@ -32,6 +32,7 @@
                 </div>
                 <div class="flex items-center gap-x-2">
                     <div class="text-sm font-medium">Luis Palacios</div>
+                    <button onclick="resetData()" class="text-xs px-3 py-1 bg-zinc-800 hover:bg-red-500/20 text-red-400 rounded-lg">Reset</button>
                     <div class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center text-xs font-medium border border-zinc-700">LP</div>
                 </div>
             </div>
@@ -382,6 +383,13 @@
             updateAll();
         }
 
+        function resetData() {
+            if (confirm("¿Seguro que quieres borrar todos los datos?")) {
+                localStorage.removeItem("agentbase_leads");
+                leads = [];
+                updateAll();
+            }
+        }
         window.onload = init;
     </script>
 </body>
