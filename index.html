@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agentbase • Dashboard</title>
+    <title>Agentbase • CRM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
         .dashboard-card { background: #111113; border: 1px solid #27272a; border-radius: 16px; }
-        .metric-value { font-size: 32px; line-height: 1; font-weight: 600; }
+        .metric-value { font-size: 28px; line-height: 1; font-weight: 600; }
+        .activity-day { transition: all 0.2s; }
     </style>
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
@@ -26,13 +27,13 @@
                 </div>
             </div>
             <div class="flex items-center gap-x-3">
+                <button onclick="resetData()" class="text-xs px-3 py-1 bg-zinc-800 hover:bg-red-500/20 text-red-400 rounded-lg">Reset</button>
                 <div class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-full text-xs flex items-center gap-x-2">
                     <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
                     <span class="text-emerald-400">Activo</span>
                 </div>
                 <div class="flex items-center gap-x-2">
                     <div class="text-sm font-medium">Luis Palacios</div>
-                    <button onclick="resetData()" class="text-xs px-3 py-1 bg-zinc-800 hover:bg-red-500/20 text-red-400 rounded-lg">Reset</button>
                     <div class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center text-xs font-medium border border-zinc-700">LP</div>
                 </div>
             </div>
@@ -41,38 +42,44 @@
 
     <div class="max-w-screen-2xl mx-auto px-8 py-8">
         
+        <!-- Calendario de Actividad Semanal -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-3 px-1">
+                <div class="font-semibold text-lg">Actividad Semanal</div>
+                <div class="text-xs text-zinc-400">Meta diaria: <span class="font-medium text-emerald-400">8 contactos</span></div>
+            </div>
+            <div class="dashboard-card p-4">
+                <div id="weekly-calendar" class="grid grid-cols-7 gap-2"></div>
+            </div>
+        </div>
+
         <!-- KPIs -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <div class="dashboard-card p-6">
-                <div class="text-xs text-zinc-400">CONTACTOS ESTA SEMANA</div>
-                <div class="metric-value mt-2" id="kpi-contacts">0</div>
-                <div class="text-emerald-400 text-xs mt-1">Meta: 150</div>
+            <div class="dashboard-card p-5">
+                <div class="text-xs text-zinc-400">CONTACTOS ACTIVOS</div>
+                <div class="metric-value mt-1" id="kpi-contacts">0</div>
             </div>
-            <div class="dashboard-card p-6">
+            <div class="dashboard-card p-5">
                 <div class="text-xs text-zinc-400">REUNIONES</div>
-                <div class="metric-value mt-2" id="kpi-meetings">0</div>
-                <div class="text-blue-400 text-xs mt-1">Meta: 8</div>
+                <div class="metric-value mt-1" id="kpi-meetings">0</div>
             </div>
-            <div class="dashboard-card p-6">
+            <div class="dashboard-card p-5">
                 <div class="text-xs text-zinc-400">CIERRES</div>
-                <div class="metric-value mt-2" id="kpi-closes">0</div>
-                <div class="text-violet-400 text-xs mt-1">Meta: 2</div>
+                <div class="metric-value mt-1" id="kpi-closes">0</div>
             </div>
-            <div class="dashboard-card p-6">
+            <div class="dashboard-card p-5">
                 <div class="text-xs text-zinc-400">TASA DE CONVERSIÓN</div>
-                <div class="metric-value mt-2" id="kpi-conversion">0%</div>
-                <div class="text-amber-400 text-xs mt-1">Cerrados / Total</div>
+                <div class="metric-value mt-1" id="kpi-conversion">0%</div>
             </div>
-            <div class="dashboard-card p-6">
+            <div class="dashboard-card p-5">
                 <div class="text-xs text-zinc-400">COMISIÓN TOTAL</div>
-                <div class="metric-value mt-2" id="kpi-commission">$0</div>
-                <div class="text-amber-400 text-xs mt-1">Instalación + Recurrente</div>
+                <div class="metric-value mt-1" id="kpi-commission">$0</div>
             </div>
         </div>
 
         <div class="grid lg:grid-cols-3 gap-6">
             
-            <!-- Pipeline Activo -->
+            <!-- Pipeline -->
             <div class="lg:col-span-2">
                 <div class="flex items-center justify-between mb-4 px-1">
                     <div class="font-semibold text-xl">Pipeline Activo</div>
@@ -85,32 +92,27 @@
                     <table class="w-full text-sm">
                         <thead class="bg-zinc-950">
                             <tr>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Lead</th>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Industria</th>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Etapa</th>
+                                <th class="text-left px-5 py-3 text-xs font-medium text-zinc-400">Lead</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">WhatsApp</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Fuente</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Etapa</th>
                                 <th class="px-4"></th>
                             </tr>
                         </thead>
-                        <tbody id="pipeline-body" class="divide-y divide-zinc-800"></tbody>
+                        <tbody id="pipeline-body" class="divide-y divide-zinc-800 text-sm"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Comisiones -->
-            <div>
-                <div class="font-semibold text-xl mb-4 px-1">Comisiones</div>
-                <div class="dashboard-card p-6 space-y-5 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-zinc-400">Por Instalación</span>
-                        <span class="font-semibold" id="comm-install">$0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-zinc-400">Comisión Recurrente</span>
-                        <span class="font-semibold" id="comm-recurring">$0</span>
-                    </div>
-                    <div class="pt-4 border-t border-zinc-800 flex justify-between">
-                        <span class="font-medium">Total Acumulado</span>
-                        <span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span>
+            <!-- Comisiones + Próximas Acciones -->
+            <div class="space-y-6">
+                <!-- Comisiones -->
+                <div>
+                    <div class="font-semibold text-xl mb-4 px-1">Comisiones</div>
+                    <div class="dashboard-card p-5 space-y-4 text-sm">
+                        <div class="flex justify-between"><span class="text-zinc-400">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
+                        <div class="pt-3 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total</span><span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span></div>
                     </div>
                 </div>
             </div>
@@ -125,10 +127,10 @@
                     <table class="w-full text-sm">
                         <thead class="bg-zinc-950">
                             <tr>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Lead</th>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Industria</th>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Motivo</th>
-                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Notas</th>
+                                <th class="text-left px-5 py-3 text-xs font-medium text-zinc-400">Lead</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Industria</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Motivo</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Notas</th>
                             </tr>
                         </thead>
                         <tbody id="lost-body" class="divide-y divide-zinc-800"></tbody>
@@ -139,140 +141,141 @@
         </div>
     </div>
 
-    <!-- Modal para cerrar lead -->
-    <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <!-- Modal Agregar Lead -->
+    <div id="add-lead-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-lg font-semibold mb-5">Cerrar Lead</h3>
+            <h3 class="text-lg font-semibold mb-5">Nuevo Lead</h3>
             <div class="space-y-4">
-                <div>
-                    <label class="text-sm text-zinc-400">Plan mensual</label>
-                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
-                        <option value="500">$500</option>
-                        <option value="1200">$1,200</option>
-                        <option value="2500">$2,500</option>
-                        <option value="5000">$5,000</option>
+                <div><label class="text-xs text-zinc-400">Nombre</label><input id="new-name" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Industria</label><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">WhatsApp</label><input id="new-whatsapp" type="text" placeholder="521234567890" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Fuente</label>
+                    <select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1">
+                        <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
                     </select>
-                </div>
-                <div class="flex items-center gap-x-3">
-                    <input type="checkbox" id="install-check" class="w-4 h-4 accent-emerald-500">
-                    <label for="install-check" class="text-sm">Incluye instalación ($5,000)</label>
                 </div>
             </div>
             <div class="flex gap-x-3 mt-6">
-                <button onclick="closeModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="confirmClose()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-sm font-semibold">Confirmar Cierre</button>
+                <button onclick="closeAddModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
+                <button onclick="saveNewLead()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-sm font-semibold">Guardar Lead</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal para descartar lead -->
+    <!-- Modal Descartar -->
     <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-semibold mb-5">Descartar Lead</h3>
             <div class="space-y-4">
                 <div>
-                    <label class="text-sm text-zinc-400">Motivo de pérdida</label>
+                    <label class="text-sm text-zinc-400">Motivo</label>
                     <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
-                        <option value="Precio">Precio demasiado alto</option>
-                        <option value="Competencia">Eligió a la competencia</option>
-                        <option value="No respuesta">No respondió / Fantasma</option>
-                        <option value="Timing">Timing incorrecto</option>
-                        <option value="Presupuesto">Sin presupuesto</option>
-                        <option value="Otro">Otro motivo</option>
+                        <option>Precio</option><option>Competencia</option><option>No respuesta</option><option>Timing</option><option>Presupuesto</option><option>Otro</option>
                     </select>
                 </div>
-                <div>
-                    <label class="text-sm text-zinc-400">Notas adicionales (opcional)</label>
-                    <textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1 h-20 resize-none" placeholder="Comentarios..."></textarea>
-                </div>
+                <div><label class="text-sm text-zinc-400">Notas</label><textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1 h-16 resize-none"></textarea></div>
             </div>
             <div class="flex gap-x-3 mt-6">
                 <button onclick="closeLostModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="confirmLost()" class="flex-1 py-2.5 rounded-2xl bg-red-600 text-sm font-semibold">Descartar Lead</button>
+                <button onclick="confirmLost()" class="flex-1 py-2.5 rounded-2xl bg-red-600 text-sm font-semibold">Descartar</button>
             </div>
         </div>
     </div>
 
     <script>
         let leads = [];
-        let currentLeadIndex = null;
         let currentLostIndex = null;
 
-        function saveToLocalStorage() {
+        function saveData() {
             localStorage.setItem("agentbase_leads", JSON.stringify(leads));
         }
 
         function updateAll() {
             renderPipeline();
             renderLostLeads();
+            renderWeeklyCalendar();
             updateKPIs();
             updateCommissions();
-            saveToLocalStorage();
+            saveData();
         }
 
         function updateKPIs() {
-            const activeLeads = leads.filter(l => l.status !== "Perdido");
+            const active = leads.filter(l => l.status !== "Perdido");
             const closed = leads.filter(l => l.stage === "Cerrado");
-            const lost = leads.filter(l => l.status === "Perdido");
 
-            document.getElementById("kpi-contacts").innerText = activeLeads.length;
-            document.getElementById("kpi-meetings").innerText = activeLeads.filter(l => l.stage === "Reunión").length;
+            document.getElementById("kpi-contacts").innerText = active.length;
+            document.getElementById("kpi-meetings").innerText = active.filter(l => l.stage === "Reunión").length;
             document.getElementById("kpi-closes").innerText = closed.length;
 
-            // Tasa de conversión
-            const total = leads.length;
-            const conversionRate = total > 0 ? Math.round((closed.length / total) * 100) : 0;
-            document.getElementById("kpi-conversion").innerText = conversionRate + "%";
+            const rate = leads.length > 0 ? Math.round((closed.length / leads.length) * 100) : 0;
+            document.getElementById("kpi-conversion").innerText = rate + "%";
         }
 
         function updateCommissions() {
             const closed = leads.filter(l => l.stage === "Cerrado");
-            let installComm = 0;
-            let recurringComm = 0;
+            let install = 0, recurring = 0;
 
-            closed.forEach(lead => {
-                if (lead.install) installComm += 5000;
-                const monthly = lead.plan ? parseInt(lead.plan) * 0.12 : 0;
-                recurringComm += monthly;
+            closed.forEach(l => {
+                if (l.install) install += 5000;
+                if (l.plan) recurring += parseInt(l.plan) * 0.12;
             });
 
-            document.getElementById("comm-install").innerText = "$" + installComm.toLocaleString();
-            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurringComm).toLocaleString();
-            document.getElementById("comm-total").innerText = "$" + (installComm + Math.round(recurringComm)).toLocaleString();
+            document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
+            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
+            document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
+        }
+
+        function renderWeeklyCalendar() {
+            const container = document.getElementById("weekly-calendar");
+            container.innerHTML = "";
+            const dailyGoal = 8;
+
+            const today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split("T")[0];
+
+                const count = leads.filter(l => l.lastContact === dateStr).length;
+                const metGoal = count >= dailyGoal;
+
+                const dayEl = document.createElement("div");
+                dayEl.className = `activity-day text-center p-3 rounded-xl border ${metGoal ? 'bg-emerald-500/10 border-emerald-500/30' : count > 0 ? 'bg-red-500/10 border-red-500/30' : 'border-zinc-800'}`;
+                dayEl.innerHTML = `
+                    <div class="text-xs text-zinc-400">${date.toLocaleDateString('es-ES', {weekday:'short'})}</div>
+                    <div class="text-xl font-semibold mt-1">${count}</div>
+                    <div class="text-[10px] ${metGoal ? 'text-emerald-400' : 'text-zinc-500'}">${metGoal ? 'Meta ✓' : ''}</div>
+                `;
+                container.appendChild(dayEl);
+            }
         }
 
         function renderPipeline() {
             const tbody = document.getElementById("pipeline-body");
             tbody.innerHTML = "";
+            const active = leads.filter(l => l.status !== "Perdido");
 
-            const activeLeads = leads.filter(l => l.status !== "Perdido");
-
-            if (activeLeads.length === 0) {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads activos.</td>`;
-                tbody.appendChild(row);
+            if (active.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-500">No hay leads activos.</td></tr>`;
                 return;
             }
 
-            activeLeads.forEach((lead, index) => {
+            active.forEach((lead, idx) => {
                 const realIndex = leads.indexOf(lead);
                 const row = document.createElement("tr");
-                row.className = "hover:bg-zinc-900/50";
                 row.innerHTML = `
-                    <td class="px-6 py-4 font-medium">${lead.name}</td>
-                    <td class="px-6 py-4 text-zinc-400">${lead.industry}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span>
+                    <td class="px-5 py-4 font-medium">${lead.name}</td>
+                    <td class="px-4 py-4">
+                        ${lead.whatsapp ? 
+                            `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline"><i class="fa-brands fa-whatsapp mr-1"></i> Chat</a>` : 
+                            `<span class="text-zinc-500 text-xs">—</span>`}
                     </td>
+                    <td class="px-4 py-4 text-xs text-zinc-400">${lead.source || "-"}</td>
+                    <td class="px-4 py-4"><span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
                     <td class="px-4 py-4 text-right">
-                        <div class="flex items-center justify-end gap-x-2">
-                            <button onclick="markAsLost(${realIndex})" class="text-xs px-2 py-1 rounded-lg hover:bg-red-500/10 text-red-400">
-                                <i class="fa-solid fa-times"></i>
-                            </button>
-                            ${lead.stage !== "Cerrado" ? 
-                                `<button onclick="advanceStage(${realIndex})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
-                                `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? "+ Inst" : ""}</span>`
-                            }
+                        <div class="flex gap-x-2 justify-end">
+                            <button onclick="markAsLost(${realIndex})" class="text-red-400 hover:bg-red-500/10 px-2 py-1 rounded"><i class="fa-solid fa-times"></i></button>
+                            <button onclick="advanceStage(${realIndex})" class="text-xs px-3 py-1 rounded hover:bg-zinc-800">Avanzar</button>
                         </div>
                     </td>
                 `;
@@ -283,59 +286,62 @@
         function renderLostLeads() {
             const tbody = document.getElementById("lost-body");
             tbody.innerHTML = "";
+            const lost = leads.filter(l => l.status === "Perdido");
+            document.getElementById("lost-count").innerText = lost.length;
 
-            const lostLeads = leads.filter(l => l.status === "Perdido");
-
-            document.getElementById("lost-count").innerText = lostLeads.length;
-
-            if (lostLeads.length === 0) {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads perdidos.</td>`;
-                tbody.appendChild(row);
+            if (lost.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads perdidos.</td></tr>`;
                 return;
             }
 
-            lostLeads.forEach((lead) => {
+            lost.forEach(lead => {
                 const row = document.createElement("tr");
-                row.className = "hover:bg-zinc-900/50";
                 row.innerHTML = `
-                    <td class="px-6 py-4 font-medium">${lead.name}</td>
-                    <td class="px-6 py-4 text-zinc-400">${lead.industry}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 text-xs rounded-full bg-red-500/10 text-red-400">${lead.lostReason || "Sin motivo"}</span>
-                    </td>
-                    <td class="px-6 py-4 text-zinc-400 text-xs">${lead.lostNotes || "-"}</td>
+                    <td class="px-5 py-4">${lead.name}</td>
+                    <td class="px-4 py-4 text-zinc-400">${lead.industry}</td>
+                    <td class="px-4 py-4"><span class="px-3 py-1 text-xs rounded-full bg-red-500/10 text-red-400">${lead.lostReason}</span></td>
+                    <td class="px-4 py-4 text-xs text-zinc-400">${lead.lostNotes || "-"}</td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
         function addLead() {
-            const name = prompt("Nombre del lead:");
-            if (!name) return;
-            const industry = prompt("Industria:", "Inmobiliaria");
-            leads.push({ 
-                name, 
-                industry: industry || "General", 
-                stage: "Contactado", 
+            document.getElementById("add-lead-modal").classList.remove("hidden");
+        }
+
+        function closeAddModal() {
+            document.getElementById("add-lead-modal").classList.add("hidden");
+        }
+
+        function saveNewLead() {
+            const lead = {
+                name: document.getElementById("new-name").value,
+                industry: document.getElementById("new-industry").value,
+                whatsapp: document.getElementById("new-whatsapp").value,
+                source: document.getElementById("new-source").value,
+                stage: "Contactado",
                 status: "Activo",
-                notes: "" 
-            });
+                lastContact: new Date().toISOString().split("T")[0]
+            };
+            if (!lead.name) return;
+            leads.push(lead);
+            closeAddModal();
             updateAll();
         }
 
         function advanceStage(index) {
-            const stages = ["Contactado", "Respondió", "Reunión", "Propuesta", "Negociación", "Cerrado"];
+            const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
             const current = leads[index].stage;
-            const nextIndex = stages.indexOf(current) + 1;
-
-            if (stages[nextIndex] === "Cerrado") {
-                currentLeadIndex = index;
-                document.getElementById("close-modal").classList.remove("hidden");
+            const next = stages.indexOf(current) + 1;
+            if (stages[next] === "Cerrado") {
+                // TODO: abrir modal de cierre
+                leads[index].stage = "Cerrado";
             } else {
-                leads[index].stage = stages[nextIndex];
-                updateAll();
+                leads[index].stage = stages[next];
             }
+            leads[index].lastContact = new Date().toISOString().split("T")[0];
+            updateAll();
         }
 
         function markAsLost(index) {
@@ -344,13 +350,9 @@
         }
 
         function confirmLost() {
-            const reason = document.getElementById("lost-reason").value;
-            const notes = document.getElementById("lost-notes").value;
-
             leads[currentLostIndex].status = "Perdido";
-            leads[currentLostIndex].lostReason = reason;
-            leads[currentLostIndex].lostNotes = notes;
-
+            leads[currentLostIndex].lostReason = document.getElementById("lost-reason").value;
+            leads[currentLostIndex].lostNotes = document.getElementById("lost-notes").value;
             document.getElementById("lost-modal").classList.add("hidden");
             updateAll();
         }
@@ -359,37 +361,20 @@
             document.getElementById("lost-modal").classList.add("hidden");
         }
 
-        function confirmClose() {
-            const plan = document.getElementById("plan-select").value;
-            const hasInstall = document.getElementById("install-check").checked;
-
-            leads[currentLeadIndex].stage = "Cerrado";
-            leads[currentLeadIndex].plan = plan;
-            leads[currentLeadIndex].install = hasInstall;
-
-            document.getElementById("close-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeModal() {
-            document.getElementById("close-modal").classList.add("hidden");
-        }
-
-        function init() {
-            const saved = localStorage.getItem("agentbase_leads");
-            if (saved) {
-                leads = JSON.parse(saved);
-            }
-            updateAll();
-        }
-
         function resetData() {
-            if (confirm("¿Seguro que quieres borrar todos los datos?")) {
+            if (confirm("¿Borrar todos los datos?")) {
                 localStorage.removeItem("agentbase_leads");
                 leads = [];
                 updateAll();
             }
         }
+
+        function init() {
+            const saved = localStorage.getItem("agentbase_leads");
+            if (saved) leads = JSON.parse(saved);
+            updateAll();
+        }
+
         window.onload = init;
     </script>
 </body>
