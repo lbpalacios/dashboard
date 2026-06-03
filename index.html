@@ -80,21 +80,58 @@
             <div class="text-zinc-400 mt-1 text-[15px]">Aquí tienes el resumen de tu pipeline.</div>
         </div>
 
-        <!-- Calendario (Mitad de ancho) -->
-        <div class="max-w-[720px] mb-8">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <div class="section-title">Actividad del mes</div>
-                <div class="flex items-center gap-x-2 text-sm">
-                    <button onclick="prevMonth()" class="w-8 h-8 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <div id="calendar-month" class="font-medium text-sm w-36 text-center"></div>
-                    <button onclick="nextMonth()" class="w-8 h-8 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+        <!-- Calendario + Resumen Rápido -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 max-w-[1480px]">
+            
+            <!-- Calendario -->
+            <div>
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <div class="section-title">Actividad del mes</div>
+                    <div class="flex items-center gap-x-2 text-sm">
+                        <button onclick="prevMonth()" class="w-8 h-8 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="calendar-month" class="font-medium text-sm w-36 text-center"></div>
+                        <button onclick="nextMonth()" class="w-8 h-8 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+                <div class="elite-card p-5">
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs text-zinc-400 mb-2">
+                        <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+                    </div>
+                    <div id="monthly-calendar" class="grid grid-cols-7 gap-1"></div>
                 </div>
             </div>
-            <div class="elite-card p-5">
-                <div class="grid grid-cols-7 gap-1 text-center text-xs text-zinc-400 mb-2">
-                    <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+
+            <!-- Resumen Rápido + Leads que necesitan acción -->
+            <div>
+                <div class="section-title mb-4 px-1">Resumen Rápido</div>
+                <div class="elite-card p-5 h-full">
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <div class="text-xs text-zinc-400">Hoy</div>
+                            <div class="text-3xl font-semibold mt-1" id="today-contacts">0</div>
+                            <div class="text-xs text-emerald-400">contactos</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-zinc-400">Esta Semana</div>
+                            <div class="text-3xl font-semibold mt-1" id="week-contacts">0</div>
+                            <div class="text-xs text-emerald-400">contactos</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-zinc-400">Reuniones</div>
+                            <div class="text-3xl font-semibold mt-1" id="week-meetings">0</div>
+                            <div class="text-xs text-emerald-400">esta semana</div>
+                        </div>
+                    </div>
+
+                    <!-- Leads que necesitan acción -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="text-sm font-medium">Necesitan seguimiento</div>
+                            <div id="needs-action-count" class="text-xs px-2 py-0.5 bg-amber-500/10 text-amber-400 rounded-full"></div>
+                        </div>
+                        <div id="needs-action-list" class="space-y-1 text-sm max-h-[110px] overflow-auto pr-1"></div>
+                    </div>
                 </div>
-                <div id="monthly-calendar" class="grid grid-cols-7 gap-1"></div>
             </div>
         </div>
 
@@ -275,6 +312,7 @@
             renderMonthlyCalendar();
             updateKPIs();
             updateCommissions();
+            renderQuickSummary();
             saveData();
         }
 
@@ -302,6 +340,55 @@
             document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
             document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
             document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
+        }
+
+        function renderQuickSummary() {
+            const today = new Date().toISOString().split("T")[0];
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const weekStart = oneWeekAgo.toISOString().split("T")[0];
+
+            // Hoy
+            const todayContacts = leads.filter(l => l.lastContact === today && l.status !== "Perdido").length;
+            document.getElementById("today-contacts").innerText = todayContacts;
+
+            // Esta semana
+            const weekContacts = leads.filter(l => l.lastContact >= weekStart && l.status !== "Perdido").length;
+            document.getElementById("week-contacts").innerText = weekContacts;
+
+            // Reuniones esta semana
+            const weekMeetings = leads.filter(l => l.lastContact >= weekStart && l.stage === "Reunión").length;
+            document.getElementById("week-meetings").innerText = weekMeetings;
+
+            // Leads que necesitan seguimiento (más de 4 días sin contacto)
+            const fourDaysAgo = new Date();
+            fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+            const cutoff = fourDaysAgo.toISOString().split("T")[0];
+
+            const needsAction = leads.filter(l => 
+                l.status !== "Perdido" && 
+                l.stage !== "Cerrado" && 
+                l.lastContact < cutoff
+            );
+
+            document.getElementById("needs-action-count").innerText = needsAction.length + " leads";
+
+            const listContainer = document.getElementById("needs-action-list");
+            listContainer.innerHTML = "";
+
+            if (needsAction.length === 0) {
+                listContainer.innerHTML = `<div class="text-xs text-zinc-500 py-1">Todo al día</div>`;
+            } else {
+                needsAction.slice(0, 4).forEach(lead => {
+                    const div = document.createElement("div");
+                    div.className = "flex justify-between items-center py-1 text-xs";
+                    div.innerHTML = `
+                        <span>${lead.name}</span>
+                        <span class="text-zinc-500">${lead.lastContact}</span>
+                    `;
+                    listContainer.appendChild(div);
+                });
+            }
         }
 
         function renderMonthlyCalendar() {
