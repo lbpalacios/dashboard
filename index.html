@@ -321,12 +321,21 @@
 
         function updateCommissions() {
             const closed = leads.filter(l => l.stage === "Cerrado");
-            let install = 0, recurring = 0;
+            let install = 0;
+            let recurring = 0;
 
             closed.forEach(l => {
-                if (l.install) install += 5000;
-                if (l.plan) recurring += parseInt(l.plan) * 0.12;
+                if (l.install === true) install += 5000;
+                if (l.plan) {
+                    const planValue = parseInt(l.plan);
+                    if (!isNaN(planValue)) recurring += planValue * 0.12;
+                }
             });
+
+            document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
+            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
+            document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
+        }
 
             document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
             document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
