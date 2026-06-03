@@ -7,18 +7,63 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .dashboard-card { background: #111113; border: 1px solid #27272a; border-radius: 16px; }
-        .metric-value { font-size: 26px; line-height: 1; font-weight: 600; }
-        .calendar-day {
-            width: 100%;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            border-radius: 6px;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --font-sans: 'Inter', system_ui, sans-serif;
+        }
+        
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .dashboard-card {
+            background: #111113;
+            border: 1px solid #27272a;
+            border-radius: 20px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .dashboard-card:hover {
+            border-color: #3f3f46;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            line-height: 1;
+            font-weight: 600;
+            font-feature-settings: "tnum";
+        }
+
+        .section-header {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .modern-table thead {
+            background: #0a0a0b;
+        }
+
+        .modern-table td {
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        .activity-day {
+            font-size: 10px;
             transition: all 0.2s ease;
+        }
+        
+        .nav-active {
+            background: #18181b;
+            color: white;
         }
     </style>
 </head>
@@ -28,74 +73,90 @@
     <div class="border-b border-zinc-800 bg-[#0A0A0A]/95 sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <div class="flex items-center gap-x-2.5">
-                    <div class="w-8 h-8 bg-emerald-500 rounded-[10px] flex items-center justify-center">
-                        <i class="fa-solid fa-robot text-white"></i>
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-robot text-white text-lg"></i>
                     </div>
-                    <span class="font-display text-2xl font-semibold tracking-[-1.5px]">Agentbase</span>
+                    <div>
+                        <span class="font-display text-2xl font-semibold tracking-[-1.5px]">Agentbase</span>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-x-3">
-                <button onclick="resetData()" class="text-xs px-3 py-1.5 bg-zinc-800 hover:bg-red-500/20 text-red-400 rounded-xl flex items-center gap-x-1.5">
+            
+            <div class="flex items-center gap-x-4">
+                <button onclick="resetData()" 
+                        class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-red-400 transition-colors">
                     <i class="fa-solid fa-trash text-xs"></i>
-                    <span>Reset</span>
+                    <span class="text-xs font-medium">Resetear</span>
                 </button>
-                <div class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-full text-xs flex items-center gap-x-2">
-                    <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span class="text-emerald-400">Activo</span>
-                </div>
-                <div class="flex items-center gap-x-2">
-                    <div class="text-sm font-medium">Luis Palacios</div>
-                    <div class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center text-xs font-medium border border-zinc-700">LP</div>
+                
+                <div class="flex items-center gap-x-3 pl-4 border-l border-zinc-800">
+                    <div class="flex items-center gap-x-2">
+                        <div class="text-right">
+                            <div class="text-sm font-medium">Luis Palacios</div>
+                            <div class="text-[10px] text-zinc-500">Fundador</div>
+                        </div>
+                        <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center border border-zinc-700 text-sm font-semibold">LP</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="max-w-screen-2xl mx-auto px-8 py-8">
+    <div class="max-w-screen-2xl mx-auto px-8 py-10">
         
+        <!-- Header de bienvenida -->
+        <div class="mb-8">
+            <div class="text-3xl font-semibold tracking-[-1.2px]">Buenos días, Luis</div>
+            <div class="text-zinc-400 mt-1">Aquí tienes el resumen de tu pipeline esta semana.</div>
+        </div>
+
         <!-- Calendario Mensual -->
         <div class="mb-8">
-            <div class="flex items-center justify-between mb-3 px-1">
-                <div>
-                    <div class="font-semibold text-lg">Calendario de Actividad</div>
-                    <div class="text-xs text-zinc-400">Meta diaria: <span class="font-medium text-emerald-400">8 contactos</span></div>
-                </div>
+            <div class="flex items-center justify-between mb-4 px-1">
+                <div class="font-semibold text-lg tracking-[-0.3px]">Actividad del mes</div>
                 <div class="flex items-center gap-x-2 text-sm">
-                    <button onclick="prevMonth()" class="px-3 py-1 hover:bg-zinc-800 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
-                    <span id="calendar-month" class="font-medium w-28 text-center"></span>
-                    <button onclick="nextMonth()" class="px-3 py-1 hover:bg-zinc-800 rounded-lg"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button onclick="prevMonth()" class="w-9 h-9 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <div id="calendar-month" class="font-medium text-sm w-36 text-center"></div>
+                    <button onclick="nextMonth()" class="w-9 h-9 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
-            <div class="dashboard-card p-4">
-                <div class="grid grid-cols-7 gap-1 text-center text-xs text-zinc-400 mb-2">
-                    <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+            <div class="dashboard-card p-5">
+                <div class="grid grid-cols-7 gap-px bg-zinc-800 rounded-2xl overflow-hidden text-center text-xs">
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Dom</div>
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Lun</div>
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Mar</div>
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Mié</div>
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Jue</div>
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Vie</div>
+                    <div class="py-2 bg-zinc-900 text-zinc-400 font-medium">Sáb</div>
+                    
+                    <div id="monthly-calendar" class="col-span-7 grid grid-cols-7 gap-px bg-zinc-800"></div>
                 </div>
-                <div id="monthly-calendar" class="grid grid-cols-7 gap-1"></div>
             </div>
         </div>
 
         <!-- KPIs -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400 tracking-wider">CONTACTOS ACTIVOS</div>
-                <div class="metric-value mt-2" id="kpi-contacts">0</div>
+            <div class="dashboard-card p-6">
+                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">CONTACTOS ACTIVOS</div>
+                <div class="metric-value mt-3 text-white" id="kpi-contacts">0</div>
             </div>
-            <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400 tracking-wider">REUNIONES</div>
-                <div class="metric-value mt-2" id="kpi-meetings">0</div>
+            <div class="dashboard-card p-6">
+                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">REUNIONES</div>
+                <div class="metric-value mt-3 text-white" id="kpi-meetings">0</div>
             </div>
-            <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400 tracking-wider">CIERRES</div>
-                <div class="metric-value mt-2" id="kpi-closes">0</div>
+            <div class="dashboard-card p-6">
+                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">CIERRES</div>
+                <div class="metric-value mt-3 text-white" id="kpi-closes">0</div>
             </div>
-            <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400 tracking-wider">CONVERSIÓN</div>
-                <div class="metric-value mt-2" id="kpi-conversion">0%</div>
+            <div class="dashboard-card p-6">
+                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">TASA DE CONVERSIÓN</div>
+                <div class="metric-value mt-3 text-emerald-400" id="kpi-conversion">0%</div>
             </div>
-            <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400 tracking-wider">COMISIÓN TOTAL</div>
-                <div class="metric-value mt-2" id="kpi-commission">$0</div>
+            <div class="dashboard-card p-6">
+                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">COMISIÓN TOTAL</div>
+                <div class="metric-value mt-3 text-emerald-400" id="kpi-commission">$0</div>
             </div>
         </div>
 
@@ -103,53 +164,65 @@
             
             <!-- Pipeline -->
             <div class="lg:col-span-2">
-                <div class="flex items-center justify-between mb-4 px-1">
-                    <div class="font-semibold text-xl">Pipeline Activo</div>
-                    <button onclick="addLead()" class="px-4 py-2 bg-white text-black text-sm font-semibold rounded-2xl flex items-center gap-x-2 hover:bg-zinc-100 transition-colors">
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <div class="font-semibold text-xl tracking-[-0.4px]">Pipeline Activo</div>
+                    <button onclick="addLead()" 
+                            class="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-3xl flex items-center gap-x-2 hover:bg-zinc-100 active:scale-[0.985] transition-all shadow-lg">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Agregar Lead</span>
                     </button>
                 </div>
+                
                 <div class="dashboard-card overflow-hidden">
-                    <table class="w-full text-sm">
-                        <thead class="bg-zinc-950">
-                            <tr>
-                                <th class="text-left px-5 py-3 text-xs font-medium text-zinc-400">Lead</th>
-                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">WhatsApp</th>
-                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Fuente</th>
-                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Etapa</th>
-                                <th class="w-10"></th>
+                    <table class="w-full text-sm modern-table">
+                        <thead>
+                            <tr class="text-xs text-zinc-400">
+                                <th class="text-left px-6 py-4 font-medium">Lead</th>
+                                <th class="text-left px-4 py-4 font-medium">WhatsApp</th>
+                                <th class="text-left px-4 py-4 font-medium">Fuente</th>
+                                <th class="text-left px-4 py-4 font-medium">Etapa</th>
+                                <th class="w-12"></th>
                             </tr>
                         </thead>
-                        <tbody id="pipeline-body" class="divide-y divide-zinc-800"></tbody>
+                        <tbody id="pipeline-body" class="divide-y divide-zinc-800 text-[14px]"></tbody>
                     </table>
                 </div>
             </div>
 
             <!-- Comisiones -->
             <div>
-                <div class="font-semibold text-xl mb-4 px-1">Comisiones</div>
-                <div class="dashboard-card p-5 space-y-4 text-sm">
-                    <div class="flex justify-between"><span class="text-zinc-400">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
-                    <div class="flex justify-between"><span class="text-zinc-400">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
-                    <div class="pt-3 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total</span><span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span></div>
+                <div class="font-semibold text-xl tracking-[-0.4px] mb-4 px-2">Comisiones</div>
+                <div class="dashboard-card p-6 space-y-5">
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-zinc-400 text-sm">Por Instalación</div>
+                        <div class="font-semibold text-lg" id="comm-install">$0</div>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-zinc-400 text-sm">Comisión Recurrente</div>
+                        <div class="font-semibold text-lg" id="comm-recurring">$0</div>
+                    </div>
+                    <div class="pt-4 border-t border-zinc-800 flex justify-between items-baseline">
+                        <div class="font-medium">Total Acumulado</div>
+                        <div class="font-semibold text-2xl text-emerald-400" id="comm-total">$0</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Leads Perdidos -->
-            <div class="lg:col-span-3 mt-4">
-                <div class="font-semibold text-xl mb-4 px-1 flex items-center gap-x-2">
-                    <span>Leads Perdidos</span>
-                    <span id="lost-count" class="text-xs px-2.5 py-0.5 bg-red-500/10 text-red-400 rounded-full font-medium">0</span>
+            <div class="lg:col-span-3 mt-2">
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <div class="font-semibold text-xl tracking-[-0.4px]">Leads Perdidos</div>
+                    <div id="lost-count" class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400 font-medium"></div>
                 </div>
+                
                 <div class="dashboard-card overflow-hidden">
-                    <table class="w-full text-sm">
-                        <thead class="bg-zinc-950">
-                            <tr>
-                                <th class="text-left px-5 py-3 text-xs font-medium text-zinc-400">Lead</th>
-                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Industria</th>
-                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Motivo</th>
-                                <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Notas</th>
+                    <table class="w-full text-sm modern-table">
+                        <thead>
+                            <tr class="text-xs text-zinc-400">
+                                <th class="text-left px-6 py-4 font-medium">Lead</th>
+                                <th class="text-left px-5 py-4 font-medium">Industria</th>
+                                <th class="text-left px-5 py-4 font-medium">Motivo</th>
+                                <th class="text-left px-5 py-4 font-medium">Notas</th>
                             </tr>
                         </thead>
                         <tbody id="lost-body" class="divide-y divide-zinc-800"></tbody>
@@ -160,68 +233,72 @@
         </div>
     </div>
 
-    <!-- Modal: Agregar Lead -->
+    <!-- Modals -->
+    <!-- Agregar Lead -->
     <div id="add-lead-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-lg font-semibold mb-5">Nuevo Lead</h3>
-            <div class="space-y-4">
-                <div><label class="text-xs text-zinc-400">Nombre</label><input id="new-name" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1"></div>
-                <div><label class="text-xs text-zinc-400">Industria</label><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1"></div>
-                <div><label class="text-xs text-zinc-400">WhatsApp</label><input id="new-whatsapp" type="text" placeholder="521234567890" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1"></div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-7">
+            <div class="font-semibold text-xl mb-6">Nuevo Lead</div>
+            <div class="space-y-5">
+                <div><label class="text-xs text-zinc-400">Nombre</label><input id="new-name" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5"></div>
+                <div><label class="text-xs text-zinc-400">Industria</label><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5"></div>
+                <div><label class="text-xs text-zinc-400">WhatsApp</label><input id="new-whatsapp" type="text" placeholder="521234567890" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5"></div>
                 <div><label class="text-xs text-zinc-400">Fuente</label>
-                    <select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
+                    <select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
                         <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
                     </select>
                 </div>
             </div>
-            <div class="flex gap-x-3 mt-6">
-                <button onclick="closeAddModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="saveNewLead()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Guardar Lead</button>
+            <div class="flex gap-x-3 mt-7">
+                <button onclick="closeAddModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
+                <button onclick="saveNewLead()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Guardar Lead</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Cerrar Lead -->
+    <!-- Cerrar Lead -->
     <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-lg font-semibold mb-5">Cerrar Lead</h3>
-            <div class="space-y-4">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-7">
+            <div class="font-semibold text-xl mb-6">Cerrar Lead</div>
+            <div class="space-y-5">
                 <div>
                     <label class="text-xs text-zinc-400">Plan mensual</label>
-                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
+                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
                         <option value="9990">$9,990</option>
                         <option value="14990">$14,990</option>
                         <option value="34990">$34,990</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-x-3 pt-1">
+                <div class="flex items-center gap-x-3 pt-2">
                     <input type="checkbox" id="install-check" class="w-4 h-4 accent-emerald-500">
                     <label for="install-check" class="text-sm">Incluye instalación ($5,000)</label>
                 </div>
             </div>
-            <div class="flex gap-x-3 mt-6">
-                <button onclick="closeCloseModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="confirmClose()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-sm font-semibold">Confirmar Cierre</button>
+            <div class="flex gap-x-3 mt-7">
+                <button onclick="closeCloseModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
+                <button onclick="confirmClose()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Confirmar Cierre</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Descartar Lead -->
+    <!-- Descartar Lead -->
     <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-lg font-semibold mb-5">Descartar Lead</h3>
-            <div class="space-y-4">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-7">
+            <div class="font-semibold text-xl mb-6">Descartar Lead</div>
+            <div class="space-y-5">
                 <div>
-                    <label class="text-xs text-zinc-400">Motivo</label>
-                    <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
-                        <option>Precio</option><option>Competencia</option><option>No respuesta</option><option>Timing</option><option>Presupuesto</option><option>Otro</option>
+                    <label class="text-xs text-zinc-400">Motivo de pérdida</label>
+                    <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
+                        <option>Precio</option><option>Competencia</option><option>No respondió</option><option>Timing</option><option>Sin presupuesto</option><option>Otro</option>
                     </select>
                 </div>
-                <div><label class="text-xs text-zinc-400">Notas</label><textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1 h-16 resize-none"></textarea></div>
+                <div>
+                    <label class="text-xs text-zinc-400">Notas</label>
+                    <textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5 h-20 resize-none"></textarea>
+                </div>
             </div>
-            <div class="flex gap-x-3 mt-6">
-                <button onclick="closeLostModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="confirmLost()" class="flex-1 py-2.5 rounded-2xl bg-red-600 text-sm font-semibold">Descartar</button>
+            <div class="flex gap-x-3 mt-7">
+                <button onclick="closeLostModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
+                <button onclick="confirmLost()" class="flex-1 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-sm font-semibold">Descartar</button>
             </div>
         </div>
     </div>
@@ -283,10 +360,9 @@
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const dailyGoal = 8;
 
-            // Empty days
             for (let i = 0; i < firstDay; i++) {
                 const empty = document.createElement("div");
-                empty.className = "calendar-day";
+                empty.className = "h-9";
                 container.appendChild(empty);
             }
 
@@ -297,8 +373,8 @@
                 const met = count >= dailyGoal;
 
                 const dayEl = document.createElement("div");
-                dayEl.className = `calendar-day text-xs ${met ? 'bg-emerald-500/20 text-emerald-400' : count > 0 ? 'bg-red-500/20 text-red-400' : 'bg-zinc-900 text-zinc-400'}`;
-                dayEl.innerHTML = `<div>${day}</div><div class="text-[9px] opacity-70">${count}</div>`;
+                dayEl.className = `h-9 flex flex-col items-center justify-center rounded-xl text-xs ${met ? 'bg-emerald-500/15 text-emerald-400' : count > 0 ? 'bg-red-500/15 text-red-400' : 'bg-zinc-900 text-zinc-400'}`;
+                dayEl.innerHTML = `<div class="font-medium">${day}</div><div class="text-[9px] opacity-70 -mt-0.5">${count}</div>`;
                 container.appendChild(dayEl);
             }
         }
@@ -319,7 +395,7 @@
             const active = leads.filter(l => l.status !== "Perdido");
 
             if (active.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-500">No hay leads activos.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-zinc-500">No hay leads activos.</td></tr>`;
                 return;
             }
 
@@ -327,16 +403,16 @@
                 const idx = leads.indexOf(lead);
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td class="px-5 py-4 font-medium">${lead.name}</td>
+                    <td class="px-6 py-4 font-medium">${lead.name}</td>
                     <td class="px-4 py-4">
-                        ${lead.whatsapp ? `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline"><i class="fa-brands fa-whatsapp mr-1"></i>Chat</a>` : `<span class="text-zinc-500 text-xs">—</span>`}
+                        ${lead.whatsapp ? `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline flex items-center gap-x-1"><i class="fa-brands fa-whatsapp"></i> <span class="text-xs">Chat</span></a>` : `<span class="text-zinc-500 text-xs">—</span>`}
                     </td>
                     <td class="px-4 py-4 text-xs text-zinc-400">${lead.source || "-"}</td>
-                    <td class="px-4 py-4"><span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
-                    <td class="px-3 py-4">
+                    <td class="px-4 py-4"><span class="px-3.5 py-1 text-xs rounded-3xl bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
+                    <td class="px-4 py-4">
                         <div class="flex gap-x-1 justify-end">
-                            <button onclick="markAsLost(${idx})" class="px-2 py-1 text-red-400 hover:bg-red-500/10 rounded"><i class="fa-solid fa-times"></i></button>
-                            <button onclick="advanceStage(${idx})" class="px-3 py-1 text-xs rounded hover:bg-zinc-800">Avanzar</button>
+                            <button onclick="markAsLost(${idx})" class="px-2.5 py-1 text-red-400 hover:bg-red-500/10 rounded-2xl"><i class="fa-solid fa-times text-xs"></i></button>
+                            <button onclick="advanceStage(${idx})" class="px-3.5 py-1 text-xs rounded-2xl hover:bg-zinc-800">Avanzar</button>
                         </div>
                     </td>
                 `;
@@ -348,20 +424,20 @@
             const tbody = document.getElementById("lost-body");
             tbody.innerHTML = "";
             const lost = leads.filter(l => l.status === "Perdido");
-            document.getElementById("lost-count").innerText = lost.length;
+            document.getElementById("lost-count").innerText = lost.length + " perdidos";
 
             if (lost.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads perdidos.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-10 text-center text-zinc-500">No hay leads perdidos.</td></tr>`;
                 return;
             }
 
             lost.forEach(lead => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td class="px-5 py-4">${lead.name}</td>
-                    <td class="px-4 py-4 text-zinc-400">${lead.industry}</td>
-                    <td class="px-4 py-4"><span class="px-3 py-1 text-xs rounded-full bg-red-500/10 text-red-400">${lead.lostReason}</span></td>
-                    <td class="px-4 py-4 text-xs text-zinc-400">${lead.lostNotes || "-"}</td>
+                    <td class="px-6 py-4">${lead.name}</td>
+                    <td class="px-5 py-4 text-zinc-400">${lead.industry}</td>
+                    <td class="px-5 py-4"><span class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400">${lead.lostReason}</span></td>
+                    <td class="px-5 py-4 text-xs text-zinc-400">${lead.lostNotes || "-"}</td>
                 `;
                 tbody.appendChild(row);
             });
