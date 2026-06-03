@@ -9,8 +9,8 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
         .dashboard-card { background: #111113; border: 1px solid #27272a; border-radius: 16px; }
-        .metric-value { font-size: 28px; line-height: 1; font-weight: 600; }
-        .activity-day { transition: all 0.2s; }
+        .metric-value { font-size: 26px; line-height: 1; font-weight: 600; }
+        .activity-day { transition: all 0.2s ease; }
     </style>
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
@@ -27,7 +27,10 @@
                 </div>
             </div>
             <div class="flex items-center gap-x-3">
-                <button onclick="resetData()" class="text-xs px-3 py-1 bg-zinc-800 hover:bg-red-500/20 text-red-400 rounded-lg">Reset</button>
+                <button onclick="resetData()" class="text-xs px-3 py-1.5 bg-zinc-800 hover:bg-red-500/20 text-red-400 rounded-xl flex items-center gap-x-1.5">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                    <span>Reset</span>
+                </button>
                 <div class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-full text-xs flex items-center gap-x-2">
                     <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
                     <span class="text-emerald-400">Activo</span>
@@ -42,11 +45,13 @@
 
     <div class="max-w-screen-2xl mx-auto px-8 py-8">
         
-        <!-- Calendario de Actividad Semanal -->
+        <!-- Calendario Semanal -->
         <div class="mb-8">
             <div class="flex items-center justify-between mb-3 px-1">
-                <div class="font-semibold text-lg">Actividad Semanal</div>
-                <div class="text-xs text-zinc-400">Meta diaria: <span class="font-medium text-emerald-400">8 contactos</span></div>
+                <div>
+                    <div class="font-semibold text-lg">Actividad Semanal</div>
+                    <div class="text-xs text-zinc-400">Meta diaria: 8 contactos</div>
+                </div>
             </div>
             <div class="dashboard-card p-4">
                 <div id="weekly-calendar" class="grid grid-cols-7 gap-2"></div>
@@ -56,24 +61,24 @@
         <!-- KPIs -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400">CONTACTOS ACTIVOS</div>
-                <div class="metric-value mt-1" id="kpi-contacts">0</div>
+                <div class="text-xs text-zinc-400 tracking-wider">CONTACTOS ACTIVOS</div>
+                <div class="metric-value mt-2" id="kpi-contacts">0</div>
             </div>
             <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400">REUNIONES</div>
-                <div class="metric-value mt-1" id="kpi-meetings">0</div>
+                <div class="text-xs text-zinc-400 tracking-wider">REUNIONES</div>
+                <div class="metric-value mt-2" id="kpi-meetings">0</div>
             </div>
             <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400">CIERRES</div>
-                <div class="metric-value mt-1" id="kpi-closes">0</div>
+                <div class="text-xs text-zinc-400 tracking-wider">CIERRES</div>
+                <div class="metric-value mt-2" id="kpi-closes">0</div>
             </div>
             <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400">TASA DE CONVERSIÓN</div>
-                <div class="metric-value mt-1" id="kpi-conversion">0%</div>
+                <div class="text-xs text-zinc-400 tracking-wider">CONVERSIÓN</div>
+                <div class="metric-value mt-2" id="kpi-conversion">0%</div>
             </div>
             <div class="dashboard-card p-5">
-                <div class="text-xs text-zinc-400">COMISIÓN TOTAL</div>
-                <div class="metric-value mt-1" id="kpi-commission">$0</div>
+                <div class="text-xs text-zinc-400 tracking-wider">COMISIÓN TOTAL</div>
+                <div class="metric-value mt-2" id="kpi-commission">$0</div>
             </div>
         </div>
 
@@ -83,7 +88,7 @@
             <div class="lg:col-span-2">
                 <div class="flex items-center justify-between mb-4 px-1">
                     <div class="font-semibold text-xl">Pipeline Activo</div>
-                    <button onclick="addLead()" class="px-4 py-2 bg-white text-black text-sm font-semibold rounded-2xl flex items-center gap-x-2">
+                    <button onclick="addLead()" class="px-4 py-2 bg-white text-black text-sm font-semibold rounded-2xl flex items-center gap-x-2 hover:bg-zinc-100 transition-colors">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Agregar Lead</span>
                     </button>
@@ -96,32 +101,29 @@
                                 <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">WhatsApp</th>
                                 <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Fuente</th>
                                 <th class="text-left px-4 py-3 text-xs font-medium text-zinc-400">Etapa</th>
-                                <th class="px-4"></th>
+                                <th class="w-10"></th>
                             </tr>
                         </thead>
-                        <tbody id="pipeline-body" class="divide-y divide-zinc-800 text-sm"></tbody>
+                        <tbody id="pipeline-body" class="divide-y divide-zinc-800"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Comisiones + Próximas Acciones -->
-            <div class="space-y-6">
-                <!-- Comisiones -->
-                <div>
-                    <div class="font-semibold text-xl mb-4 px-1">Comisiones</div>
-                    <div class="dashboard-card p-5 space-y-4 text-sm">
-                        <div class="flex justify-between"><span class="text-zinc-400">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
-                        <div class="flex justify-between"><span class="text-zinc-400">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
-                        <div class="pt-3 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total</span><span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span></div>
-                    </div>
+            <!-- Comisiones -->
+            <div>
+                <div class="font-semibold text-xl mb-4 px-1">Comisiones</div>
+                <div class="dashboard-card p-5 space-y-4 text-sm">
+                    <div class="flex justify-between"><span class="text-zinc-400">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
+                    <div class="flex justify-between"><span class="text-zinc-400">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
+                    <div class="pt-3 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total Acumulado</span><span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span></div>
                 </div>
             </div>
 
             <!-- Leads Perdidos -->
-            <div class="lg:col-span-3">
+            <div class="lg:col-span-3 mt-4">
                 <div class="font-semibold text-xl mb-4 px-1 flex items-center gap-x-2">
                     <span>Leads Perdidos</span>
-                    <span id="lost-count" class="text-xs px-2 py-0.5 bg-red-500/10 text-red-400 rounded-full">0</span>
+                    <span id="lost-count" class="text-xs px-2.5 py-0.5 bg-red-500/10 text-red-400 rounded-full font-medium">0</span>
                 </div>
                 <div class="dashboard-card overflow-hidden">
                     <table class="w-full text-sm">
@@ -141,39 +143,65 @@
         </div>
     </div>
 
-    <!-- Modal Agregar Lead -->
+    <!-- Modal: Agregar Lead -->
     <div id="add-lead-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-semibold mb-5">Nuevo Lead</h3>
             <div class="space-y-4">
-                <div><label class="text-xs text-zinc-400">Nombre</label><input id="new-name" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1"></div>
-                <div><label class="text-xs text-zinc-400">Industria</label><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1"></div>
-                <div><label class="text-xs text-zinc-400">WhatsApp</label><input id="new-whatsapp" type="text" placeholder="521234567890" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Nombre</label><input id="new-name" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Industria</label><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">WhatsApp</label><input id="new-whatsapp" type="text" placeholder="521234567890" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1"></div>
                 <div><label class="text-xs text-zinc-400">Fuente</label>
-                    <select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 mt-1">
+                    <select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
                         <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
                     </select>
                 </div>
             </div>
             <div class="flex gap-x-3 mt-6">
                 <button onclick="closeAddModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="saveNewLead()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-sm font-semibold">Guardar Lead</button>
+                <button onclick="saveNewLead()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Guardar Lead</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Descartar -->
+    <!-- Modal: Cerrar Lead -->
+    <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
+            <h3 class="text-lg font-semibold mb-5">Cerrar Lead</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-zinc-400">Plan mensual</label>
+                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
+                        <option value="500">$500</option>
+                        <option value="1200">$1,200</option>
+                        <option value="2500">$2,500</option>
+                        <option value="5000">$5,000</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-x-3 pt-1">
+                    <input type="checkbox" id="install-check" class="w-4 h-4 accent-emerald-500">
+                    <label for="install-check" class="text-sm">Incluye instalación ($5,000)</label>
+                </div>
+            </div>
+            <div class="flex gap-x-3 mt-6">
+                <button onclick="closeCloseModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
+                <button onclick="confirmClose()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-sm font-semibold">Confirmar Cierre</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Descartar Lead -->
     <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-semibold mb-5">Descartar Lead</h3>
             <div class="space-y-4">
                 <div>
-                    <label class="text-sm text-zinc-400">Motivo</label>
+                    <label class="text-xs text-zinc-400">Motivo</label>
                     <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
                         <option>Precio</option><option>Competencia</option><option>No respuesta</option><option>Timing</option><option>Presupuesto</option><option>Otro</option>
                     </select>
                 </div>
-                <div><label class="text-sm text-zinc-400">Notas</label><textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1 h-16 resize-none"></textarea></div>
+                <div><label class="text-xs text-zinc-400">Notas</label><textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1 h-16 resize-none"></textarea></div>
             </div>
             <div class="flex gap-x-3 mt-6">
                 <button onclick="closeLostModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
@@ -184,6 +212,7 @@
 
     <script>
         let leads = [];
+        let currentLeadIndex = null;
         let currentLostIndex = null;
 
         function saveData() {
@@ -229,24 +258,22 @@
             const container = document.getElementById("weekly-calendar");
             container.innerHTML = "";
             const dailyGoal = 8;
-
             const today = new Date();
+
             for (let i = 6; i >= 0; i--) {
                 const date = new Date(today);
                 date.setDate(date.getDate() - i);
                 const dateStr = date.toISOString().split("T")[0];
-
                 const count = leads.filter(l => l.lastContact === dateStr).length;
-                const metGoal = count >= dailyGoal;
+                const met = count >= dailyGoal;
 
-                const dayEl = document.createElement("div");
-                dayEl.className = `activity-day text-center p-3 rounded-xl border ${metGoal ? 'bg-emerald-500/10 border-emerald-500/30' : count > 0 ? 'bg-red-500/10 border-red-500/30' : 'border-zinc-800'}`;
-                dayEl.innerHTML = `
+                const el = document.createElement("div");
+                el.className = `activity-day text-center p-3 rounded-2xl border text-sm ${met ? 'bg-emerald-500/10 border-emerald-500/40' : count > 0 ? 'bg-red-500/10 border-red-500/40' : 'border-zinc-800'}`;
+                el.innerHTML = `
                     <div class="text-xs text-zinc-400">${date.toLocaleDateString('es-ES', {weekday:'short'})}</div>
-                    <div class="text-xl font-semibold mt-1">${count}</div>
-                    <div class="text-[10px] ${metGoal ? 'text-emerald-400' : 'text-zinc-500'}">${metGoal ? 'Meta ✓' : ''}</div>
+                    <div class="text-2xl font-semibold mt-1">${count}</div>
                 `;
-                container.appendChild(dayEl);
+                container.appendChild(el);
             }
         }
 
@@ -260,22 +287,20 @@
                 return;
             }
 
-            active.forEach((lead, idx) => {
-                const realIndex = leads.indexOf(lead);
+            active.forEach(lead => {
+                const idx = leads.indexOf(lead);
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="px-5 py-4 font-medium">${lead.name}</td>
                     <td class="px-4 py-4">
-                        ${lead.whatsapp ? 
-                            `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline"><i class="fa-brands fa-whatsapp mr-1"></i> Chat</a>` : 
-                            `<span class="text-zinc-500 text-xs">—</span>`}
+                        ${lead.whatsapp ? `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline"><i class="fa-brands fa-whatsapp mr-1"></i>Chat</a>` : `<span class="text-zinc-500 text-xs">—</span>`}
                     </td>
                     <td class="px-4 py-4 text-xs text-zinc-400">${lead.source || "-"}</td>
                     <td class="px-4 py-4"><span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
-                    <td class="px-4 py-4 text-right">
-                        <div class="flex gap-x-2 justify-end">
-                            <button onclick="markAsLost(${realIndex})" class="text-red-400 hover:bg-red-500/10 px-2 py-1 rounded"><i class="fa-solid fa-times"></i></button>
-                            <button onclick="advanceStage(${realIndex})" class="text-xs px-3 py-1 rounded hover:bg-zinc-800">Avanzar</button>
+                    <td class="px-3 py-4">
+                        <div class="flex gap-x-1 justify-end">
+                            <button onclick="markAsLost(${idx})" class="px-2 py-1 text-red-400 hover:bg-red-500/10 rounded"><i class="fa-solid fa-times"></i></button>
+                            <button onclick="advanceStage(${idx})" class="px-3 py-1 text-xs rounded hover:bg-zinc-800">Avanzar</button>
                         </div>
                     </td>
                 `;
@@ -333,15 +358,33 @@
         function advanceStage(index) {
             const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
             const current = leads[index].stage;
-            const next = stages.indexOf(current) + 1;
-            if (stages[next] === "Cerrado") {
-                // TODO: abrir modal de cierre
-                leads[index].stage = "Cerrado";
+            const nextIndex = stages.indexOf(current) + 1;
+
+            if (stages[nextIndex] === "Cerrado") {
+                currentLeadIndex = index;
+                document.getElementById("close-modal").classList.remove("hidden");
             } else {
-                leads[index].stage = stages[next];
+                leads[index].stage = stages[nextIndex];
+                leads[index].lastContact = new Date().toISOString().split("T")[0];
+                updateAll();
             }
-            leads[index].lastContact = new Date().toISOString().split("T")[0];
+        }
+
+        function confirmClose() {
+            const plan = document.getElementById("plan-select").value;
+            const hasInstall = document.getElementById("install-check").checked;
+
+            leads[currentLeadIndex].stage = "Cerrado";
+            leads[currentLeadIndex].plan = plan;
+            leads[currentLeadIndex].install = hasInstall;
+            leads[currentLeadIndex].lastContact = new Date().toISOString().split("T")[0];
+
+            document.getElementById("close-modal").classList.add("hidden");
             updateAll();
+        }
+
+        function closeCloseModal() {
+            document.getElementById("close-modal").classList.add("hidden");
         }
 
         function markAsLost(index) {
