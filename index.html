@@ -10,7 +10,16 @@
         body { font-family: 'Inter', system-ui, sans-serif; }
         .dashboard-card { background: #111113; border: 1px solid #27272a; border-radius: 16px; }
         .metric-value { font-size: 26px; line-height: 1; font-weight: 600; }
-        .activity-day { transition: all 0.2s ease; }
+        .calendar-day {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
     </style>
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
@@ -45,16 +54,24 @@
 
     <div class="max-w-screen-2xl mx-auto px-8 py-8">
         
-        <!-- Calendario Semanal -->
+        <!-- Calendario Mensual -->
         <div class="mb-8">
             <div class="flex items-center justify-between mb-3 px-1">
                 <div>
-                    <div class="font-semibold text-lg">Actividad Semanal</div>
-                    <div class="text-xs text-zinc-400">Meta diaria: 8 contactos</div>
+                    <div class="font-semibold text-lg">Calendario de Actividad</div>
+                    <div class="text-xs text-zinc-400">Meta diaria: <span class="font-medium text-emerald-400">8 contactos</span></div>
+                </div>
+                <div class="flex items-center gap-x-2 text-sm">
+                    <button onclick="prevMonth()" class="px-3 py-1 hover:bg-zinc-800 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span id="calendar-month" class="font-medium w-28 text-center"></span>
+                    <button onclick="nextMonth()" class="px-3 py-1 hover:bg-zinc-800 rounded-lg"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
             </div>
             <div class="dashboard-card p-4">
-                <div id="weekly-calendar" class="grid grid-cols-7 gap-2"></div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs text-zinc-400 mb-2">
+                    <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+                </div>
+                <div id="monthly-calendar" class="grid grid-cols-7 gap-1"></div>
             </div>
         </div>
 
@@ -115,7 +132,7 @@
                 <div class="dashboard-card p-5 space-y-4 text-sm">
                     <div class="flex justify-between"><span class="text-zinc-400">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
                     <div class="flex justify-between"><span class="text-zinc-400">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
-                    <div class="pt-3 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total Acumulado</span><span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span></div>
+                    <div class="pt-3 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total</span><span class="font-semibold text-lg text-emerald-400" id="comm-total">$0</span></div>
                 </div>
             </div>
 
@@ -175,7 +192,6 @@
                         <option value="9990">$9,990</option>
                         <option value="14990">$14,990</option>
                         <option value="34990">$34,990</option>
-                        
                     </select>
                 </div>
                 <div class="flex items-center gap-x-3 pt-1">
@@ -214,6 +230,7 @@
         let leads = [];
         let currentLeadIndex = null;
         let currentLostIndex = null;
+        let currentMonth = new Date();
 
         function saveData() {
             localStorage.setItem("agentbase_leads", JSON.stringify(leads));
@@ -222,7 +239,7 @@
         function updateAll() {
             renderPipeline();
             renderLostLeads();
-            renderWeeklyCalendar();
+            renderMonthlyCalendar();
             updateKPIs();
             updateCommissions();
             saveData();
@@ -254,27 +271,46 @@
             document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
         }
 
-        function renderWeeklyCalendar() {
-            const container = document.getElementById("weekly-calendar");
+        function renderMonthlyCalendar() {
+            const container = document.getElementById("monthly-calendar");
             container.innerHTML = "";
-            const dailyGoal = 8;
-            const today = new Date();
 
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            document.getElementById("calendar-month").innerText = currentMonth.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const dailyGoal = 8;
+
+            // Empty days
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement("div");
+                empty.className = "calendar-day";
+                container.appendChild(empty);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
                 const dateStr = date.toISOString().split("T")[0];
                 const count = leads.filter(l => l.lastContact === dateStr).length;
                 const met = count >= dailyGoal;
 
-                const el = document.createElement("div");
-                el.className = `activity-day text-center p-3 rounded-2xl border text-sm ${met ? 'bg-emerald-500/10 border-emerald-500/40' : count > 0 ? 'bg-red-500/10 border-red-500/40' : 'border-zinc-800'}`;
-                el.innerHTML = `
-                    <div class="text-xs text-zinc-400">${date.toLocaleDateString('es-ES', {weekday:'short'})}</div>
-                    <div class="text-2xl font-semibold mt-1">${count}</div>
-                `;
-                container.appendChild(el);
+                const dayEl = document.createElement("div");
+                dayEl.className = `calendar-day text-xs ${met ? 'bg-emerald-500/20 text-emerald-400' : count > 0 ? 'bg-red-500/20 text-red-400' : 'bg-zinc-900 text-zinc-400'}`;
+                dayEl.innerHTML = `<div>${day}</div><div class="text-[9px] opacity-70">${count}</div>`;
+                container.appendChild(dayEl);
             }
+        }
+
+        function prevMonth() {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+            renderMonthlyCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            renderMonthlyCalendar();
         }
 
         function renderPipeline() {
