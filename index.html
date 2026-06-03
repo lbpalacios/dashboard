@@ -231,7 +231,7 @@
 
             closed.forEach(lead => {
                 if (lead.install) installComm += 5000;
-                const monthly = parseInt(lead.plan) * 0.12;
+                const monthly = lead.plan ? parseInt(lead.plan) * 0.12 : 0;
                 recurringComm += monthly;
             });
 
