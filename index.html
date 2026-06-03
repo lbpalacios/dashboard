@@ -27,6 +27,10 @@
                 </div>
             </div>
             <div class="flex items-center gap-x-4">
+                <button onclick="exportToCSV()" class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400">
+                    <i class="fa-solid fa-download text-xs"></i>
+                    <span class="text-xs font-medium">Exportar CSV</span>
+                </button>
                 <button onclick="resetData()" class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-red-400">
                     <i class="fa-solid fa-trash text-xs"></i>
                     <span class="text-xs font-medium">Resetear</span>
@@ -76,7 +80,7 @@
 
         <div class="grid lg:grid-cols-3 gap-6">
             
-            <!-- Pipeline con Filtros -->
+            <!-- Pipeline -->
             <div class="lg:col-span-2">
                 <div class="flex items-center justify-between mb-4 px-1">
                     <div class="section-title">Pipeline Activo</div>
@@ -85,29 +89,15 @@
 
                 <!-- Filtros -->
                 <div class="flex flex-wrap gap-3 mb-4">
-                    <input id="search-input" type="text" placeholder="Buscar lead..." 
-                           class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm w-64 focus:outline-none focus:border-emerald-500"
-                           onkeyup="filterPipeline()">
-                    
+                    <input id="search-input" type="text" placeholder="Buscar lead..." class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm w-64" onkeyup="filterPipeline()">
                     <select id="filter-stage" onchange="filterPipeline()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm">
                         <option value="">Todas las etapas</option>
-                        <option>Contactado</option>
-                        <option>Respondió</option>
-                        <option>Reunión</option>
-                        <option>Propuesta</option>
-                        <option>Negociación</option>
-                        <option>Cerrado</option>
+                        <option>Contactado</option><option>Respondió</option><option>Reunión</option><option>Propuesta</option><option>Negociación</option><option>Cerrado</option>
                     </select>
-
                     <select id="filter-source" onchange="filterPipeline()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm">
                         <option value="">Todas las fuentes</option>
-                        <option>Instagram</option>
-                        <option>Web</option>
-                        <option>Referido</option>
-                        <option>LinkedIn</option>
-                        <option>Otro</option>
+                        <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
                     </select>
-
                     <button onclick="clearFilters()" class="px-4 py-2 text-sm rounded-2xl border border-zinc-700 hover:bg-zinc-800">Limpiar</button>
                 </div>
 
@@ -297,7 +287,6 @@
         function prevMonth() { currentMonth.setMonth(currentMonth.getMonth() - 1); renderMonthlyCalendar(); }
         function nextMonth() { currentMonth.setMonth(currentMonth.getMonth() + 1); renderMonthlyCalendar(); }
 
-        // === FILTROS ===
         function filterPipeline() {
             const search = document.getElementById("search-input").value.toLowerCase();
             const stageFilter = document.getElementById("filter-stage").value;
@@ -375,7 +364,8 @@
                 source: document.getElementById("new-source").value,
                 stage: "Contactado",
                 status: "Activo",
-                lastContact: new Date().toISOString().split("T")[0]
+                lastContact: new Date().toISOString().split("T")[0],
+                history: []
             };
             if (!lead.name) return;
             leads.push(lead);
@@ -387,6 +377,13 @@
             const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
             const current = leads[index].stage;
             const nextIndex = stages.indexOf(current) + 1;
+
+            if (!leads[index].history) leads[index].history = [];
+            leads[index].history.push({
+                date: new Date().toISOString(),
+                action: `Avanzó a ${stages[nextIndex] || current}`
+            });
+
             if (stages[nextIndex] === "Cerrado") {
                 currentLeadIndex = index;
                 document.getElementById("close-modal").classList.remove("hidden");
@@ -400,10 +397,18 @@
         function confirmClose() {
             const plan = document.getElementById("plan-select").value;
             const hasInstall = document.getElementById("install-check").checked;
+
+            if (!leads[currentLeadIndex].history) leads[currentLeadIndex].history = [];
+            leads[currentLeadIndex].history.push({
+                date: new Date().toISOString(),
+                action: `Cerrado con plan $${plan}${hasInstall ? ' + instalación' : ''}`
+            });
+
             leads[currentLeadIndex].stage = "Cerrado";
             leads[currentLeadIndex].plan = plan;
             leads[currentLeadIndex].install = hasInstall;
             leads[currentLeadIndex].lastContact = new Date().toISOString().split("T")[0];
+
             document.getElementById("close-modal").classList.add("hidden");
             updateAll();
         }
@@ -416,6 +421,12 @@
         }
 
         function confirmLost() {
+            if (!leads[currentLostIndex].history) leads[currentLostIndex].history = [];
+            leads[currentLostIndex].history.push({
+                date: new Date().toISOString(),
+                action: `Descartado - ${document.getElementById("lost-reason").value}`
+            });
+
             leads[currentLostIndex].status = "Perdido";
             leads[currentLostIndex].lostReason = document.getElementById("lost-reason").value;
             leads[currentLostIndex].lostNotes = document.getElementById("lost-notes").value;
@@ -439,6 +450,162 @@
             lead.lastContact = document.getElementById("followup-date").value;
             lead.nextAction = document.getElementById("followup-action").value;
             lead.nextActionDate = document.getElementById("followup-action-date").value;
+
+            if (!lead.history) lead.history = [];
+            lead.history.push({
+                date: new Date().toISOString(),
+                action: `Seguimiento actualizado: ${lead.nextAction || 'Sin acción'}`
+            });
+
+            document.getElementById("followup-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeFollowupModal() { document.getElementById("followup-modal").classList.add("hidden"); }
+
+        function exportToCSV() {
+            if (leads.length === 0) {
+                alert("No hay datos para exportar");
+                return;
+            }
+
+            const headers = ["Nombre", "Industria", "WhatsApp", "Fuente", "Etapa", "Estado", "Plan", "Instalación", "Último Contacto", "Próxima Acción", "Fecha Próxima Acción", "Motivo Pérdida", "Notas"];
+            const rows = leads.map(lead => [
+                lead.name || "",
+                lead.industry || "",
+                lead.whatsapp || "",
+                lead.source || "",
+                lead.stage || "",
+                lead.status || "Activo",
+                lead.plan || "",
+                lead.install ? "Sí" : "No",
+                lead.lastContact || "",
+                lead.nextAction || "",
+                lead.nextActionDate || "",
+                lead.lostReason || "",
+                lead.lostNotes || ""
+            ]);
+
+            let csvContent = headers.join(",") + "\n";
+            rows.forEach(row => {
+                csvContent += row.map(field => `"${field}"`).join(",") + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "agentbase_leads.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function addLead() { document.getElementById("add-lead-modal").classList.remove("hidden"); }
+        function closeAddModal() { document.getElementById("add-lead-modal").classList.add("hidden"); }
+
+        function saveNewLead() {
+            const lead = {
+                name: document.getElementById("new-name").value,
+                industry: document.getElementById("new-industry").value,
+                whatsapp: document.getElementById("new-whatsapp").value,
+                source: document.getElementById("new-source").value,
+                stage: "Contactado",
+                status: "Activo",
+                lastContact: new Date().toISOString().split("T")[0],
+                history: []
+            };
+            if (!lead.name) return;
+            leads.push(lead);
+            closeAddModal();
+            updateAll();
+        }
+
+        function advanceStage(index) {
+            const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
+            const current = leads[index].stage;
+            const nextIndex = stages.indexOf(current) + 1;
+
+            if (!leads[index].history) leads[index].history = [];
+            leads[index].history.push({
+                date: new Date().toISOString(),
+                action: `Avanzó a ${stages[nextIndex] || current}`
+            });
+
+            if (stages[nextIndex] === "Cerrado") {
+                currentLeadIndex = index;
+                document.getElementById("close-modal").classList.remove("hidden");
+            } else {
+                leads[index].stage = stages[nextIndex];
+                leads[index].lastContact = new Date().toISOString().split("T")[0];
+                updateAll();
+            }
+        }
+
+        function confirmClose() {
+            const plan = document.getElementById("plan-select").value;
+            const hasInstall = document.getElementById("install-check").checked;
+
+            if (!leads[currentLeadIndex].history) leads[currentLeadIndex].history = [];
+            leads[currentLeadIndex].history.push({
+                date: new Date().toISOString(),
+                action: `Cerrado con plan $${plan}${hasInstall ? ' + instalación' : ''}`
+            });
+
+            leads[currentLeadIndex].stage = "Cerrado";
+            leads[currentLeadIndex].plan = plan;
+            leads[currentLeadIndex].install = hasInstall;
+            leads[currentLeadIndex].lastContact = new Date().toISOString().split("T")[0];
+
+            document.getElementById("close-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeCloseModal() { document.getElementById("close-modal").classList.add("hidden"); }
+
+        function markAsLost(index) {
+            currentLostIndex = index;
+            document.getElementById("lost-modal").classList.remove("hidden");
+        }
+
+        function confirmLost() {
+            if (!leads[currentLostIndex].history) leads[currentLostIndex].history = [];
+            leads[currentLostIndex].history.push({
+                date: new Date().toISOString(),
+                action: `Descartado - ${document.getElementById("lost-reason").value}`
+            });
+
+            leads[currentLostIndex].status = "Perdido";
+            leads[currentLostIndex].lostReason = document.getElementById("lost-reason").value;
+            leads[currentLostIndex].lostNotes = document.getElementById("lost-notes").value;
+            document.getElementById("lost-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeLostModal() { document.getElementById("lost-modal").classList.add("hidden"); }
+
+        function openFollowupModal(index) {
+            currentFollowupIndex = index;
+            const lead = leads[index];
+            document.getElementById("followup-date").value = lead.lastContact || "";
+            document.getElementById("followup-action").value = lead.nextAction || "";
+            document.getElementById("followup-action-date").value = lead.nextActionDate || "";
+            document.getElementById("followup-modal").classList.remove("hidden");
+        }
+
+        function saveFollowup() {
+            const lead = leads[currentFollowupIndex];
+            lead.lastContact = document.getElementById("followup-date").value;
+            lead.nextAction = document.getElementById("followup-action").value;
+            lead.nextActionDate = document.getElementById("followup-action-date").value;
+
+            if (!lead.history) lead.history = [];
+            lead.history.push({
+                date: new Date().toISOString(),
+                action: `Seguimiento actualizado: ${lead.nextAction || 'Sin acción'}`
+            });
+
             document.getElementById("followup-modal").classList.add("hidden");
             updateAll();
         }
