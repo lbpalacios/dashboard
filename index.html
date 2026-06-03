@@ -7,41 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap');
-        
-        body { 
-            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-        }
-        
-        .font-display {
-            font-family: 'Inter', system-ui, sans-serif;
-            font-weight: 600;
-            letter-spacing: -0.025em;
-        }
-
-        .elite-card {
-            background: #111113;
-            border: 1px solid #27272a;
-            border-radius: 20px;
-        }
-
-        .metric-value {
-            font-size: 34px;
-            line-height: 1;
-            font-weight: 600;
-            font-feature-settings: "tnum";
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .font-display { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; letter-spacing: -0.025em; }
+        .elite-card { background: #111113; border: 1px solid #27272a; border-radius: 20px; }
+        .metric-value { font-size: 34px; line-height: 1; font-weight: 600; }
+        .section-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
     </style>
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
     
-    <!-- Header -->
     <div class="border-b border-zinc-800 bg-[#0A0A0A]/95 sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
@@ -52,19 +26,14 @@
                     <span class="font-display text-2xl font-semibold tracking-[-1.2px]">Agentbase</span>
                 </div>
             </div>
-            
             <div class="flex items-center gap-x-4">
-                <button onclick="resetData()" 
-                        class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-red-400 transition-colors">
+                <button onclick="resetData()" class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-red-400">
                     <i class="fa-solid fa-trash text-xs"></i>
                     <span class="text-xs font-medium">Resetear</span>
                 </button>
-                
                 <div class="flex items-center gap-x-3 pl-4 border-l border-zinc-800">
                     <div class="flex items-center gap-x-2.5">
-                        <div class="text-right">
-                            <div class="text-sm font-medium">Luis Palacios</div>
-                        </div>
+                        <div class="text-sm font-medium">Luis Palacios</div>
                         <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex items-center justify-center text-xs font-semibold border border-zinc-700">LP</div>
                     </div>
                 </div>
@@ -73,8 +42,6 @@
     </div>
 
     <div class="max-w-screen-2xl mx-auto px-8 py-10">
-        
-        <!-- Bienvenida -->
         <div class="mb-8">
             <div class="text-3xl font-semibold tracking-[-1.5px]">Buenos días, Luis</div>
             <div class="text-zinc-400 mt-1 text-[15px]">Aquí tienes el resumen de tu pipeline.</div>
@@ -100,189 +67,126 @@
 
         <!-- KPIs -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <div class="elite-card p-6">
-                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">CONTACTOS ACTIVOS</div>
-                <div class="metric-value mt-3" id="kpi-contacts">0</div>
-            </div>
-            <div class="elite-card p-6">
-                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">REUNIONES</div>
-                <div class="metric-value mt-3" id="kpi-meetings">0</div>
-            </div>
-            <div class="elite-card p-6">
-                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">CIERRES</div>
-                <div class="metric-value mt-3" id="kpi-closes">0</div>
-            </div>
-            <div class="elite-card p-6">
-                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">CONVERSIÓN</div>
-                <div class="metric-value mt-3 text-emerald-400" id="kpi-conversion">0%</div>
-            </div>
-            <div class="elite-card p-6">
-                <div class="text-xs font-medium text-zinc-400 tracking-[0.5px]">COMISIÓN TOTAL</div>
-                <div class="metric-value mt-3 text-emerald-400" id="kpi-commission">$0</div>
-            </div>
+            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">CONTACTOS ACTIVOS</div><div class="metric-value mt-3" id="kpi-contacts">0</div></div>
+            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">REUNIONES</div><div class="metric-value mt-3" id="kpi-meetings">0</div></div>
+            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">CIERRES</div><div class="metric-value mt-3" id="kpi-closes">0</div></div>
+            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">CONVERSIÓN</div><div class="metric-value mt-3 text-emerald-400" id="kpi-conversion">0%</div></div>
+            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">COMISIÓN TOTAL</div><div class="metric-value mt-3 text-emerald-400" id="kpi-commission">$0</div></div>
         </div>
 
         <div class="grid lg:grid-cols-3 gap-6">
-            
-            <!-- Pipeline -->
             <div class="lg:col-span-2">
                 <div class="flex items-center justify-between mb-4 px-1">
                     <div class="section-title">Pipeline Activo</div>
-                    <button onclick="addLead()" 
-                            class="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-3xl flex items-center gap-x-2 hover:bg-zinc-100 active:scale-[0.985] transition-all">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Agregar Lead</span>
-                    </button>
+                    <button onclick="addLead()" class="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-3xl flex items-center gap-x-2">+ Agregar Lead</button>
                 </div>
-                
                 <div class="elite-card overflow-hidden">
                     <table class="w-full text-sm">
-                        <thead class="bg-zinc-950">
-                            <tr class="text-xs text-zinc-400">
-                                <th class="text-left px-6 py-4 font-medium">Lead</th>
-                                <th class="text-left px-4 py-4 font-medium">WhatsApp</th>
-                                <th class="text-left px-4 py-4 font-medium">Fuente</th>
-                                <th class="text-left px-4 py-4 font-medium">Etapa</th>
-                                <th class="w-20"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="pipeline-body" class="divide-y divide-zinc-800 text-[14px]"></tbody>
+                        <thead class="bg-zinc-950"><tr class="text-xs text-zinc-400">
+                            <th class="text-left px-6 py-4">Lead</th>
+                            <th class="text-left px-4 py-4">WhatsApp</th>
+                            <th class="text-left px-4 py-4">Fuente</th>
+                            <th class="text-left px-4 py-4">Etapa</th>
+                            <th class="w-12"></th>
+                        </tr></thead>
+                        <tbody id="pipeline-body" class="divide-y divide-zinc-800"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Comisiones -->
             <div>
                 <div class="section-title mb-4 px-1">Comisiones</div>
                 <div class="elite-card p-6 space-y-5">
-                    <div class="flex justify-between items-baseline">
-                        <div class="text-zinc-400 text-sm">Instalación</div>
-                        <div class="font-semibold text-lg" id="comm-install">$0</div>
-                    </div>
-                    <div class="flex justify-between items-baseline">
-                        <div class="text-zinc-400 text-sm">Recurrente</div>
-                        <div class="font-semibold text-lg" id="comm-recurring">$0</div>
-                    </div>
-                    <div class="pt-4 border-t border-zinc-800 flex justify-between items-baseline">
-                        <div class="font-medium">Total Acumulado</div>
-                        <div class="font-semibold text-2xl text-emerald-400" id="comm-total">$0</div>
-                    </div>
+                    <div class="flex justify-between"><span class="text-zinc-400 text-sm">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
+                    <div class="flex justify-between"><span class="text-zinc-400 text-sm">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
+                    <div class="pt-4 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total</span><span class="font-semibold text-2xl text-emerald-400" id="comm-total">$0</span></div>
                 </div>
             </div>
 
-            <!-- Leads Perdidos -->
             <div class="lg:col-span-3 mt-4">
                 <div class="flex items-center justify-between mb-4 px-1">
                     <div class="section-title">Leads Perdidos</div>
                     <div id="lost-count" class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400 font-medium"></div>
                 </div>
-                
                 <div class="elite-card overflow-hidden">
                     <table class="w-full text-sm">
-                        <thead class="bg-zinc-950">
-                            <tr class="text-xs text-zinc-400">
-                                <th class="text-left px-6 py-4 font-medium">Lead</th>
-                                <th class="text-left px-5 py-4 font-medium">Industria</th>
-                                <th class="text-left px-5 py-4 font-medium">Motivo</th>
-                                <th class="text-left px-5 py-4 font-medium">Notas</th>
-                            </tr>
-                        </thead>
+                        <thead class="bg-zinc-950"><tr class="text-xs text-zinc-400">
+                            <th class="text-left px-6 py-4">Lead</th>
+                            <th class="text-left px-5 py-4">Industria</th>
+                            <th class="text-left px-5 py-4">Motivo</th>
+                            <th class="text-left px-5 py-4">Notas</th>
+                        </tr></thead>
                         <tbody id="lost-body" class="divide-y divide-zinc-800"></tbody>
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
 
     <!-- Modals -->
-    <!-- Agregar Lead -->
     <div id="add-lead-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Nuevo Lead</div>
             <div class="space-y-5">
-                <div><label class="text-xs text-zinc-400">Nombre</label><input id="new-name" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5"></div>
-                <div><label class="text-xs text-zinc-400">Industria</label><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5"></div>
-                <div><label class="text-xs text-zinc-400">WhatsApp</label><input id="new-whatsapp" type="text" placeholder="521234567890" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5"></div>
-                <div><label class="text-xs text-zinc-400">Fuente</label>
-                    <select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
-                        <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
-                    </select>
-                </div>
+                <div><input id="new-name" type="text" placeholder="Nombre" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3"></div>
+                <div><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3"></div>
+                <div><input id="new-whatsapp" type="text" placeholder="WhatsApp" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3"></div>
+                <div><select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3">
+                    <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
+                </select></div>
             </div>
             <div class="flex gap-x-3 mt-7">
-                <button onclick="closeAddModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
-                <button onclick="saveNewLead()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Guardar Lead</button>
+                <button onclick="closeAddModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
+                <button onclick="saveNewLead()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-sm font-semibold">Guardar</button>
             </div>
         </div>
     </div>
 
-    <!-- Cerrar Lead -->
     <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Cerrar Lead</div>
             <div class="space-y-5">
-                <div>
-                    <label class="text-xs text-zinc-400">Plan mensual</label>
-                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
-                        <option value="9990">$9,990</option>
-                        <option value="14990">$14,990</option>
-                        <option value="34990">$34,990</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-x-3 pt-2">
-                    <input type="checkbox" id="install-check" class="w-4 h-4 accent-emerald-500">
-                    <label for="install-check" class="text-sm">Incluye instalación ($5,000)</label>
-                </div>
+                <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3">
+                    <option value="9990">$9,990</option>
+                    <option value="14990">$14,990</option>
+                    <option value="34990">$34,990</option>
+                </select>
+                <div class="flex items-center gap-x-3"><input type="checkbox" id="install-check"><label>Incluye instalación ($5,000)</label></div>
             </div>
             <div class="flex gap-x-3 mt-7">
-                <button onclick="closeCloseModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
-                <button onclick="confirmClose()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Confirmar Cierre</button>
+                <button onclick="closeCloseModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
+                <button onclick="confirmClose()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-sm font-semibold">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <!-- Descartar Lead -->
     <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Descartar Lead</div>
             <div class="space-y-5">
-                <div>
-                    <label class="text-xs text-zinc-400">Motivo</label>
-                    <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
-                        <option>Precio</option><option>Competencia</option><option>No respondió</option><option>Timing</option><option>Sin presupuesto</option><option>Otro</option>
-                    </select>
-                </div>
-                <div><label class="text-xs text-zinc-400">Notas</label><textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5 h-20 resize-none"></textarea></div>
+                <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3">
+                    <option>Precio</option><option>Competencia</option><option>No respondió</option><option>Timing</option><option>Sin presupuesto</option><option>Otro</option>
+                </select>
+                <textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 h-20 resize-none"></textarea>
             </div>
             <div class="flex gap-x-3 mt-7">
-                <button onclick="closeLostModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
-                <button onclick="confirmLost()" class="flex-1 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-sm font-semibold">Descartar</button>
+                <button onclick="closeLostModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
+                <button onclick="confirmLost()" class="flex-1 py-3 rounded-2xl bg-red-600 text-sm font-semibold">Descartar</button>
             </div>
         </div>
     </div>
 
-    <!-- Follow-up / Actualizar contacto -->
     <div id="followup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Actualizar Seguimiento</div>
             <div class="space-y-5">
-                <div>
-                    <label class="text-xs text-zinc-400">Fecha de último contacto</label>
-                    <input id="followup-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
-                </div>
-                <div>
-                    <label class="text-xs text-zinc-400">Próxima acción</label>
-                    <input id="followup-action" type="text" placeholder="Llamar para seguimiento" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
-                </div>
-                <div>
-                    <label class="text-xs text-zinc-400">Fecha de próxima acción</label>
-                    <input id="followup-action-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
-                </div>
+                <div><label class="text-xs text-zinc-400">Fecha último contacto</label><input id="followup-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Próxima acción</label><input id="followup-action" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Fecha próxima acción</label><input id="followup-action-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1"></div>
             </div>
             <div class="flex gap-x-3 mt-7">
-                <button onclick="closeFollowupModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
-                <button onclick="saveFollowup()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Guardar</button>
+                <button onclick="closeFollowupModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
+                <button onclick="saveFollowup()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-sm font-semibold">Guardar</button>
             </div>
         </div>
     </div>
@@ -294,9 +198,7 @@
         let currentFollowupIndex = null;
         let currentMonth = new Date();
 
-        function saveData() {
-            localStorage.setItem("agentbase_leads", JSON.stringify(leads));
-        }
+        function saveData() { localStorage.setItem("agentbase_leads", JSON.stringify(leads)); }
 
         function updateAll() {
             renderPipeline();
@@ -310,33 +212,23 @@
         function updateKPIs() {
             const active = leads.filter(l => l.status !== "Perdido");
             const closed = leads.filter(l => l.stage === "Cerrado");
-
             document.getElementById("kpi-contacts").innerText = active.length;
             document.getElementById("kpi-meetings").innerText = active.filter(l => l.stage === "Reunión").length;
             document.getElementById("kpi-closes").innerText = closed.length;
-
             const rate = leads.length > 0 ? Math.round((closed.length / leads.length) * 100) : 0;
             document.getElementById("kpi-conversion").innerText = rate + "%";
         }
 
         function updateCommissions() {
             const closed = leads.filter(l => l.stage === "Cerrado");
-            let install = 0;
-            let recurring = 0;
-
+            let install = 0, recurring = 0;
             closed.forEach(l => {
                 if (l.install === true) install += 5000;
                 if (l.plan) {
-                    const planValue = parseInt(l.plan);
-                    if (!isNaN(planValue)) recurring += planValue * 0.12;
+                    const val = parseInt(l.plan);
+                    if (!isNaN(val)) recurring += val * 0.12;
                 }
             });
-
-            document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
-            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
-            document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
-        }
-
             document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
             document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
             document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
@@ -345,27 +237,20 @@
         function renderMonthlyCalendar() {
             const container = document.getElementById("monthly-calendar");
             container.innerHTML = "";
-
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth();
             document.getElementById("calendar-month").innerText = currentMonth.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
-
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const dailyGoal = 8;
-
             for (let i = 0; i < firstDay; i++) {
-                const empty = document.createElement("div");
-                empty.className = "h-9";
-                container.appendChild(empty);
+                const empty = document.createElement("div"); empty.className = "h-9"; container.appendChild(empty);
             }
-
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dateStr = date.toISOString().split("T")[0];
                 const count = leads.filter(l => l.lastContact === dateStr).length;
                 const met = count >= dailyGoal;
-
                 const dayEl = document.createElement("div");
                 dayEl.className = `h-9 flex flex-col items-center justify-center rounded-2xl text-xs ${met ? 'bg-emerald-500/15 text-emerald-400' : count > 0 ? 'bg-red-500/15 text-red-400' : 'bg-zinc-900 text-zinc-400'}`;
                 dayEl.innerHTML = `<div class="font-medium">${day}</div><div class="text-[9px] opacity-70 -mt-0.5">${count}</div>`;
@@ -373,48 +258,32 @@
             }
         }
 
-        function prevMonth() {
-            currentMonth.setMonth(currentMonth.getMonth() - 1);
-            renderMonthlyCalendar();
-        }
-
-        function nextMonth() {
-            currentMonth.setMonth(currentMonth.getMonth() + 1);
-            renderMonthlyCalendar();
-        }
+        function prevMonth() { currentMonth.setMonth(currentMonth.getMonth() - 1); renderMonthlyCalendar(); }
+        function nextMonth() { currentMonth.setMonth(currentMonth.getMonth() + 1); renderMonthlyCalendar(); }
 
         function renderPipeline() {
             const tbody = document.getElementById("pipeline-body");
             tbody.innerHTML = "";
             const active = leads.filter(l => l.status !== "Perdido");
-
             if (active.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-zinc-500">No hay leads activos.</td></tr>`;
                 return;
             }
-
             active.forEach(lead => {
                 const idx = leads.indexOf(lead);
-                const hasAction = lead.nextAction && lead.nextAction.trim() !== "";
-                
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="px-6 py-4 font-medium">${lead.name}</td>
-                    <td class="px-4 py-4">
-                        ${lead.whatsapp ? `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline flex items-center gap-x-1"><i class="fa-brands fa-whatsapp"></i> <span class="text-xs">Chat</span></a>` : `<span class="text-zinc-500 text-xs">—</span>`}
-                    </td>
+                    <td class="px-4 py-4">${lead.whatsapp ? `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline"><i class="fa-brands fa-whatsapp"></i> Chat</a>` : `<span class="text-zinc-500 text-xs">—</span>`}</td>
                     <td class="px-4 py-4 text-xs text-zinc-400">${lead.source || "-"}</td>
                     <td class="px-4 py-4"><span class="px-3.5 py-1 text-xs rounded-3xl bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
                     <td class="px-4 py-4">
-                        <div class="flex gap-x-1 justify-end items-center">
-                            <button onclick="openFollowupModal(${idx})" class="px-2 py-1 text-emerald-400 hover:bg-emerald-500/10 rounded-2xl" title="Actualizar seguimiento">
-                                <i class="fa-solid fa-calendar-check text-xs"></i>
-                            </button>
+                        <div class="flex gap-x-1 justify-end">
+                            <button onclick="openFollowupModal(${idx})" class="px-2 py-1 text-emerald-400 hover:bg-emerald-500/10 rounded-2xl"><i class="fa-solid fa-calendar-check text-xs"></i></button>
                             <button onclick="markAsLost(${idx})" class="px-2 py-1 text-red-400 hover:bg-red-500/10 rounded-2xl"><i class="fa-solid fa-times text-xs"></i></button>
                             <button onclick="advanceStage(${idx})" class="px-3 py-1 text-xs rounded-2xl hover:bg-zinc-800">Avanzar</button>
                         </div>
-                    </td>
-                `;
+                    </td>`;
                 tbody.appendChild(row);
             });
         }
@@ -424,31 +293,19 @@
             tbody.innerHTML = "";
             const lost = leads.filter(l => l.status === "Perdido");
             document.getElementById("lost-count").innerText = lost.length + " perdidos";
-
             if (lost.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-10 text-center text-zinc-500">No hay leads perdidos.</td></tr>`;
                 return;
             }
-
             lost.forEach(lead => {
                 const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td class="px-6 py-4">${lead.name}</td>
-                    <td class="px-5 py-4 text-zinc-400">${lead.industry}</td>
-                    <td class="px-5 py-4"><span class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400">${lead.lostReason}</span></td>
-                    <td class="px-5 py-4 text-xs text-zinc-400">${lead.lostNotes || "-"}</td>
-                `;
+                row.innerHTML = `<td class="px-6 py-4">${lead.name}</td><td class="px-5 py-4 text-zinc-400">${lead.industry}</td><td class="px-5 py-4"><span class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400">${lead.lostReason}</span></td><td class="px-5 py-4 text-xs text-zinc-400">${lead.lostNotes || "-"}</td>`;
                 tbody.appendChild(row);
             });
         }
 
-        function addLead() {
-            document.getElementById("add-lead-modal").classList.remove("hidden");
-        }
-
-        function closeAddModal() {
-            document.getElementById("add-lead-modal").classList.add("hidden");
-        }
+        function addLead() { document.getElementById("add-lead-modal").classList.remove("hidden"); }
+        function closeAddModal() { document.getElementById("add-lead-modal").classList.add("hidden"); }
 
         function saveNewLead() {
             const lead = {
@@ -470,7 +327,6 @@
             const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
             const current = leads[index].stage;
             const nextIndex = stages.indexOf(current) + 1;
-
             if (stages[nextIndex] === "Cerrado") {
                 currentLeadIndex = index;
                 document.getElementById("close-modal").classList.remove("hidden");
@@ -484,19 +340,15 @@
         function confirmClose() {
             const plan = document.getElementById("plan-select").value;
             const hasInstall = document.getElementById("install-check").checked;
-
             leads[currentLeadIndex].stage = "Cerrado";
             leads[currentLeadIndex].plan = plan;
             leads[currentLeadIndex].install = hasInstall;
             leads[currentLeadIndex].lastContact = new Date().toISOString().split("T")[0];
-
             document.getElementById("close-modal").classList.add("hidden");
             updateAll();
         }
 
-        function closeCloseModal() {
-            document.getElementById("close-modal").classList.add("hidden");
-        }
+        function closeCloseModal() { document.getElementById("close-modal").classList.add("hidden"); }
 
         function markAsLost(index) {
             currentLostIndex = index;
@@ -511,36 +363,27 @@
             updateAll();
         }
 
-        function closeLostModal() {
-            document.getElementById("lost-modal").classList.add("hidden");
-        }
+        function closeLostModal() { document.getElementById("lost-modal").classList.add("hidden"); }
 
-        // === NUEVA FUNCIONALIDAD: Seguimiento ===
         function openFollowupModal(index) {
             currentFollowupIndex = index;
             const lead = leads[index];
-
             document.getElementById("followup-date").value = lead.lastContact || "";
             document.getElementById("followup-action").value = lead.nextAction || "";
             document.getElementById("followup-action-date").value = lead.nextActionDate || "";
-
             document.getElementById("followup-modal").classList.remove("hidden");
         }
 
         function saveFollowup() {
             const lead = leads[currentFollowupIndex];
-            
             lead.lastContact = document.getElementById("followup-date").value;
             lead.nextAction = document.getElementById("followup-action").value;
             lead.nextActionDate = document.getElementById("followup-action-date").value;
-
             document.getElementById("followup-modal").classList.add("hidden");
             updateAll();
         }
 
-        function closeFollowupModal() {
-            document.getElementById("followup-modal").classList.add("hidden");
-        }
+        function closeFollowupModal() { document.getElementById("followup-modal").classList.add("hidden"); }
 
         function resetData() {
             if (confirm("¿Borrar todos los datos?")) {
