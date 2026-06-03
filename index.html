@@ -80,7 +80,7 @@
             <div class="text-zinc-400 mt-1 text-[15px]">Aquí tienes el resumen de tu pipeline.</div>
         </div>
 
-        <!-- Calendario (ancho controlado) -->
+        <!-- Calendario -->
         <div class="max-w-[720px] mb-10">
             <div class="flex items-center justify-between mb-4 px-1">
                 <div class="section-title">Actividad del mes</div>
@@ -143,7 +143,7 @@
                                 <th class="text-left px-4 py-4 font-medium">WhatsApp</th>
                                 <th class="text-left px-4 py-4 font-medium">Fuente</th>
                                 <th class="text-left px-4 py-4 font-medium">Etapa</th>
-                                <th class="w-12"></th>
+                                <th class="w-20"></th>
                             </tr>
                         </thead>
                         <tbody id="pipeline-body" class="divide-y divide-zinc-800 text-[14px]"></tbody>
@@ -196,6 +196,7 @@
     </div>
 
     <!-- Modals -->
+    <!-- Agregar Lead -->
     <div id="add-lead-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Nuevo Lead</div>
@@ -216,6 +217,7 @@
         </div>
     </div>
 
+    <!-- Cerrar Lead -->
     <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Cerrar Lead</div>
@@ -240,6 +242,7 @@
         </div>
     </div>
 
+    <!-- Descartar Lead -->
     <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-7">
             <div class="font-semibold text-xl mb-6">Descartar Lead</div>
@@ -259,10 +262,36 @@
         </div>
     </div>
 
+    <!-- Follow-up / Actualizar contacto -->
+    <div id="followup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="elite-card w-full max-w-md p-7">
+            <div class="font-semibold text-xl mb-6">Actualizar Seguimiento</div>
+            <div class="space-y-5">
+                <div>
+                    <label class="text-xs text-zinc-400">Fecha de último contacto</label>
+                    <input id="followup-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
+                </div>
+                <div>
+                    <label class="text-xs text-zinc-400">Próxima acción</label>
+                    <input id="followup-action" type="text" placeholder="Llamar para seguimiento" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
+                </div>
+                <div>
+                    <label class="text-xs text-zinc-400">Fecha de próxima acción</label>
+                    <input id="followup-action-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1.5">
+                </div>
+            </div>
+            <div class="flex gap-x-3 mt-7">
+                <button onclick="closeFollowupModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700 text-sm font-medium">Cancelar</button>
+                <button onclick="saveFollowup()" class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let leads = [];
         let currentLeadIndex = null;
         let currentLostIndex = null;
+        let currentFollowupIndex = null;
         let currentMonth = new Date();
 
         function saveData() {
@@ -357,6 +386,8 @@
 
             active.forEach(lead => {
                 const idx = leads.indexOf(lead);
+                const hasAction = lead.nextAction && lead.nextAction.trim() !== "";
+                
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="px-6 py-4 font-medium">${lead.name}</td>
@@ -366,9 +397,12 @@
                     <td class="px-4 py-4 text-xs text-zinc-400">${lead.source || "-"}</td>
                     <td class="px-4 py-4"><span class="px-3.5 py-1 text-xs rounded-3xl bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
                     <td class="px-4 py-4">
-                        <div class="flex gap-x-1 justify-end">
-                            <button onclick="markAsLost(${idx})" class="px-2.5 py-1 text-red-400 hover:bg-red-500/10 rounded-2xl"><i class="fa-solid fa-times text-xs"></i></button>
-                            <button onclick="advanceStage(${idx})" class="px-3.5 py-1 text-xs rounded-2xl hover:bg-zinc-800">Avanzar</button>
+                        <div class="flex gap-x-1 justify-end items-center">
+                            <button onclick="openFollowupModal(${idx})" class="px-2 py-1 text-emerald-400 hover:bg-emerald-500/10 rounded-2xl" title="Actualizar seguimiento">
+                                <i class="fa-solid fa-calendar-check text-xs"></i>
+                            </button>
+                            <button onclick="markAsLost(${idx})" class="px-2 py-1 text-red-400 hover:bg-red-500/10 rounded-2xl"><i class="fa-solid fa-times text-xs"></i></button>
+                            <button onclick="advanceStage(${idx})" class="px-3 py-1 text-xs rounded-2xl hover:bg-zinc-800">Avanzar</button>
                         </div>
                     </td>
                 `;
@@ -470,6 +504,33 @@
 
         function closeLostModal() {
             document.getElementById("lost-modal").classList.add("hidden");
+        }
+
+        // === NUEVA FUNCIONALIDAD: Seguimiento ===
+        function openFollowupModal(index) {
+            currentFollowupIndex = index;
+            const lead = leads[index];
+
+            document.getElementById("followup-date").value = lead.lastContact || "";
+            document.getElementById("followup-action").value = lead.nextAction || "";
+            document.getElementById("followup-action-date").value = lead.nextActionDate || "";
+
+            document.getElementById("followup-modal").classList.remove("hidden");
+        }
+
+        function saveFollowup() {
+            const lead = leads[currentFollowupIndex];
+            
+            lead.lastContact = document.getElementById("followup-date").value;
+            lead.nextAction = document.getElementById("followup-action").value;
+            lead.nextActionDate = document.getElementById("followup-action-date").value;
+
+            document.getElementById("followup-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeFollowupModal() {
+            document.getElementById("followup-modal").classList.add("hidden");
         }
 
         function resetData() {
