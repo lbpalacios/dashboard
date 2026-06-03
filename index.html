@@ -222,6 +222,7 @@
         function updateCommissions() {
             const closed = leads.filter(l => l.stage === "Cerrado");
             let install = 0, recurring = 0;
+
             closed.forEach(l => {
                 if (l.install === true) install += 5000;
                 if (l.plan) {
@@ -229,9 +230,14 @@
                     if (!isNaN(val)) recurring += val * 0.12;
                 }
             });
+
+            // Actualizar ambos lugares
             document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
             document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
             document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
+
+            // KPI superior
+            document.getElementById("kpi-commission").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
         }
 
         function renderMonthlyCalendar() {
@@ -243,9 +249,11 @@
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const dailyGoal = 8;
+
             for (let i = 0; i < firstDay; i++) {
                 const empty = document.createElement("div"); empty.className = "h-9"; container.appendChild(empty);
             }
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dateStr = date.toISOString().split("T")[0];
