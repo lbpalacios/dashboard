@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentbase • Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
@@ -15,7 +14,6 @@
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
     
-    <!-- Header -->
     <div class="border-b border-zinc-800 bg-[#0A0A0A]/95 sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
@@ -110,16 +108,8 @@
                 </div>
             </div>
 
-            <!-- Gráfica -->
-            <div class="lg:col-span-2">
-                <div class="font-semibold text-xl mb-4 px-1">Actividad Semanal</div>
-                <div class="dashboard-card p-6">
-                    <canvas id="activityChart" height="90"></canvas>
-                </div>
-            </div>
-
             <!-- Progreso -->
-            <div>
+            <div class="lg:col-span-3">
                 <div class="font-semibold text-xl mb-4 px-1">Progreso Semanal</div>
                 <div class="dashboard-card p-6 space-y-6 text-sm">
                     <div>
@@ -142,7 +132,7 @@
         </div>
     </div>
 
-    <!-- Modal para cerrar lead -->
+    <!-- Modal Cerrar Lead -->
     <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-semibold mb-5">Cerrar Lead</h3>
@@ -170,22 +160,47 @@
         </div>
     </div>
 
+    <!-- Modal Notas -->
+    <div id="notes-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
+            <h3 class="text-lg font-semibold mb-4">Notas del Lead</h3>
+            <textarea id="notes-text" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm" placeholder="Escribe tus notas aquí..."></textarea>
+            
+            <div class="flex gap-x-3 mt-4">
+                <button onclick="closeNotesModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
+                <button onclick="saveNotes()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-2xl text-sm font-semibold">Guardar Notas</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let leads = [];
-        let chart;
+        let currentNotesIndex = null;
+
+        function saveData() {
+            localStorage.setItem("agentbase_leads", JSON.stringify(leads));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem("agentbase_leads");
+            if (saved) {
+                leads = JSON.parse(saved);
+            }
+        }
 
         function updateAll() {
             updateKPIs();
             renderPipeline();
             updateProgress();
+            saveData();
         }
 
         function updateKPIs() {
-            const closed = leads.filter(l => l.stage === 'Cerrado');
+            const closed = leads.filter(l => l.stage === "Cerrado");
             
-            document.getElementById('kpi-contacts').innerText = leads.length;
-            document.getElementById('kpi-meetings').innerText = leads.filter(l => l.stage === 'Reunión').length;
-            document.getElementById('kpi-closes').innerText = closed.length;
+            document.getElementById("kpi-contacts").innerText = leads.length;
+            document.getElementById("kpi-meetings").innerText = leads.filter(l => l.stage === "Reunión").length;
+            document.getElementById("kpi-closes").innerText = closed.length;
 
             let installComm = 0;
             let recurringComm = 0;
@@ -196,25 +211,26 @@
                 recurringComm += monthly;
             });
 
-            document.getElementById('comm-install').innerText = '$' + installComm.toLocaleString();
-            document.getElementById('comm-recurring').innerText = '$' + Math.round(recurringComm).toLocaleString();
-            document.getElementById('comm-total').innerText = '$' + (installComm + Math.round(recurringComm)).toLocaleString();
+            document.getElementById("comm-install").innerText = "$" + installComm.toLocaleString();
+            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurringComm).toLocaleString();
+            document.getElementById("comm-total").innerText = "$" + (installComm + Math.round(recurringComm)).toLocaleString();
         }
 
         function renderPipeline() {
-            const tbody = document.getElementById('pipeline-body');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById("pipeline-body");
+            tbody.innerHTML = "";
 
             if (leads.length === 0) {
-                const row = document.createElement('tr');
+                const row = document.createElement("tr");
                 row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads todavía.</td>`;
                 tbody.appendChild(row);
                 return;
             }
 
             leads.forEach((lead, index) => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-zinc-900/50';
+                const hasNotes = lead.notes && lead.notes.trim() !== "";
+                const row = document.createElement("tr");
+                row.className = "hover:bg-zinc-900/50";
                 row.innerHTML = `
                     <td class="px-6 py-4 font-medium">${lead.name}</td>
                     <td class="px-6 py-4 text-zinc-400">${lead.industry}</td>
@@ -222,10 +238,15 @@
                         <span class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">${lead.stage}</span>
                     </td>
                     <td class="px-4 py-4 text-right">
-                        ${lead.stage !== 'Cerrado' ? 
-                            `<button onclick="advanceStage(${index})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
-                            `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? '+ Inst' : ''}</span>`
-                        }
+                        <div class="flex items-center justify-end gap-x-2">
+                            <button onclick="openNotes(${index})" class="text-xs px-2 py-1 rounded-lg hover:bg-zinc-800 text-zinc-400">
+                                <i class="fa-solid fa-sticky-note ${hasNotes ? 'text-emerald-400' : ''}"></i>
+                            </button>
+                            ${lead.stage !== "Cerrado" ? 
+                                `<button onclick="advanceStage(${index})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
+                                `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? "+ Inst" : ""}</span>`
+                            }
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -236,7 +257,7 @@
             const name = prompt("Nombre del lead:");
             if (!name) return;
             const industry = prompt("Industria:", "Inmobiliaria");
-            leads.push({ name, industry: industry || "General", stage: "Contactado" });
+            leads.push({ name, industry: industry || "General", stage: "Contactado", notes: "" });
             updateAll();
         }
 
@@ -249,7 +270,7 @@
 
             if (stages[nextIndex] === "Cerrado") {
                 currentLeadIndex = index;
-                document.getElementById('close-modal').classList.remove('hidden');
+                document.getElementById("close-modal").classList.remove("hidden");
             } else {
                 leads[index].stage = stages[nextIndex];
                 updateAll();
@@ -257,35 +278,59 @@
         }
 
         function confirmClose() {
-            const plan = document.getElementById('plan-select').value;
-            const hasInstall = document.getElementById('install-check').checked;
+            const plan = document.getElementById("plan-select").value;
+            const hasInstall = document.getElementById("install-check").checked;
 
             leads[currentLeadIndex].stage = "Cerrado";
             leads[currentLeadIndex].plan = plan;
             leads[currentLeadIndex].install = hasInstall;
 
-            document.getElementById('close-modal').classList.add('hidden');
+            document.getElementById("close-modal").classList.add("hidden");
             updateAll();
         }
 
         function closeModal() {
-            document.getElementById('close-modal').classList.add('hidden');
+            document.getElementById("close-modal").classList.add("hidden");
+        }
+
+        // Notas
+        function openNotes(index) {
+            currentNotesIndex = index;
+            document.getElementById("notes-text").value = leads[index].notes || "";
+            document.getElementById("notes-modal").classList.remove("hidden");
+        }
+
+        function saveNotes() {
+            const text = document.getElementById("notes-text").value;
+            leads[currentNotesIndex].notes = text;
+            document.getElementById("notes-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeNotesModal() {
+            document.getElementById("notes-modal").classList.add("hidden");
         }
 
         function updateProgress() {
             const contactPercent = Math.min((leads.length / 150) * 100, 100);
-            document.getElementById('bar-contacts').style.width = contactPercent + '%';
-            document.getElementById('progress-contacts').innerText = `${leads.length} / 150`;
+            document.getElementById("bar-contacts").style.width = contactPercent + "%";
+            document.getElementById("progress-contacts").innerText = `${leads.length} / 150`;
 
-            const closedCount = leads.filter(l => l.stage === 'Cerrado').length;
+            const closedCount = leads.filter(l => l.stage === "Cerrado").length;
             const closePercent = Math.min((closedCount / 2) * 100, 100);
-            document.getElementById('bar-closes').style.width = closePercent + '%';
-            document.getElementById('progress-closes').innerText = `${closedCount} / 2`;
+            document.getElementById("bar-closes").style.width = closePercent + "%";
+            document.getElementById("progress-closes").innerText = `${closedCount} / 2`;
         }
 
-        window.onload = function() {
+        function init() {
+            const saved = localStorage.getItem("agentbase_leads");
+            if (saved) {
+                leads = JSON.parse(saved);
+            }
             updateAll();
         }
+
+        window.onload = init;
     </script>
 </body>
 </html>
