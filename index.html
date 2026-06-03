@@ -14,6 +14,7 @@
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
     
+    <!-- Header -->
     <div class="border-b border-zinc-800 bg-[#0A0A0A]/95 sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
@@ -40,7 +41,7 @@
     <div class="max-w-screen-2xl mx-auto px-8 py-8">
         
         <!-- KPIs -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <div class="dashboard-card p-6">
                 <div class="text-xs text-zinc-400">CONTACTOS ESTA SEMANA</div>
                 <div class="metric-value mt-2" id="kpi-contacts">0</div>
@@ -57,6 +58,11 @@
                 <div class="text-violet-400 text-xs mt-1">Meta: 2</div>
             </div>
             <div class="dashboard-card p-6">
+                <div class="text-xs text-zinc-400">TASA DE CONVERSIÓN</div>
+                <div class="metric-value mt-2" id="kpi-conversion">0%</div>
+                <div class="text-amber-400 text-xs mt-1">Cerrados / Total</div>
+            </div>
+            <div class="dashboard-card p-6">
                 <div class="text-xs text-zinc-400">COMISIÓN TOTAL</div>
                 <div class="metric-value mt-2" id="kpi-commission">$0</div>
                 <div class="text-amber-400 text-xs mt-1">Instalación + Recurrente</div>
@@ -65,10 +71,10 @@
 
         <div class="grid lg:grid-cols-3 gap-6">
             
-            <!-- Pipeline -->
+            <!-- Pipeline Activo -->
             <div class="lg:col-span-2">
                 <div class="flex items-center justify-between mb-4 px-1">
-                    <div class="font-semibold text-xl">Pipeline</div>
+                    <div class="font-semibold text-xl">Pipeline Activo</div>
                     <button onclick="addLead()" class="px-4 py-2 bg-white text-black text-sm font-semibold rounded-2xl flex items-center gap-x-2">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Agregar Lead</span>
@@ -108,100 +114,118 @@
                 </div>
             </div>
 
-            <!-- Progreso -->
+            <!-- Leads Perdidos -->
             <div class="lg:col-span-3">
-                <div class="font-semibold text-xl mb-4 px-1">Progreso Semanal</div>
-                <div class="dashboard-card p-6 space-y-6 text-sm">
-                    <div>
-                        <div class="flex justify-between text-xs mb-2">
-                            <span class="text-zinc-400">Contactos</span>
-                            <span id="progress-contacts">0 / 150</span>
-                        </div>
-                        <div class="h-2 bg-zinc-800 rounded-full"><div id="bar-contacts" class="h-2 bg-emerald-500 rounded-full" style="width:0%"></div></div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs mb-2">
-                            <span class="text-zinc-400">Cierres</span>
-                            <span id="progress-closes">0 / 2</span>
-                        </div>
-                        <div class="h-2 bg-zinc-800 rounded-full"><div id="bar-closes" class="h-2 bg-emerald-500 rounded-full" style="width:0%"></div></div>
-                    </div>
+                <div class="font-semibold text-xl mb-4 px-1 flex items-center gap-x-2">
+                    <span>Leads Perdidos</span>
+                    <span id="lost-count" class="text-xs px-2 py-0.5 bg-red-500/10 text-red-400 rounded-full">0</span>
+                </div>
+                <div class="dashboard-card overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-zinc-950">
+                            <tr>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Lead</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Industria</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Motivo</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-zinc-400">Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lost-body" class="divide-y divide-zinc-800"></tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Modal Cerrar Lead -->
+    <!-- Modal para cerrar lead -->
     <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-semibold mb-5">Cerrar Lead</h3>
-            
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs text-zinc-400 block mb-1">Plan comprado</label>
-                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm">
-                        <option value="9990">Básico - $9,990</option>
-                        <option value="14990">Pro - $14,990</option>
-                        <option value="39990">Enterprise - $39,990</option>
+                    <label class="text-sm text-zinc-400">Plan mensual</label>
+                    <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
+                        <option value="500">$500</option>
+                        <option value="1200">$1,200</option>
+                        <option value="2500">$2,500</option>
+                        <option value="5000">$5,000</option>
                     </select>
                 </div>
-                
                 <div class="flex items-center gap-x-3">
                     <input type="checkbox" id="install-check" class="w-4 h-4 accent-emerald-500">
-                    <label for="install-check" class="text-sm">Incluye instalación ($5,000 comisión)</label>
+                    <label for="install-check" class="text-sm">Incluye instalación ($5,000)</label>
                 </div>
             </div>
-
             <div class="flex gap-x-3 mt-6">
                 <button onclick="closeModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="confirmClose()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-2xl text-sm font-semibold">Confirmar Cierre</button>
+                <button onclick="confirmClose()" class="flex-1 py-2.5 rounded-2xl bg-emerald-600 text-sm font-semibold">Confirmar Cierre</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Notas -->
-    <div id="notes-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <!-- Modal para descartar lead -->
+    <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-lg font-semibold mb-4">Notas del Lead</h3>
-            <textarea id="notes-text" rows="5" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm" placeholder="Escribe tus notas aquí..."></textarea>
-            
-            <div class="flex gap-x-3 mt-4">
-                <button onclick="closeNotesModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
-                <button onclick="saveNotes()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-2xl text-sm font-semibold">Guardar Notas</button>
+            <h3 class="text-lg font-semibold mb-5">Descartar Lead</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-zinc-400">Motivo de pérdida</label>
+                    <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1">
+                        <option value="Precio">Precio demasiado alto</option>
+                        <option value="Competencia">Eligió a la competencia</option>
+                        <option value="No respuesta">No respondió / Fantasma</option>
+                        <option value="Timing">Timing incorrecto</option>
+                        <option value="Presupuesto">Sin presupuesto</option>
+                        <option value="Otro">Otro motivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-zinc-400">Notas adicionales (opcional)</label>
+                    <textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 mt-1 h-20 resize-none" placeholder="Comentarios..."></textarea>
+                </div>
+            </div>
+            <div class="flex gap-x-3 mt-6">
+                <button onclick="closeLostModal()" class="flex-1 py-2.5 rounded-2xl border border-zinc-700 text-sm">Cancelar</button>
+                <button onclick="confirmLost()" class="flex-1 py-2.5 rounded-2xl bg-red-600 text-sm font-semibold">Descartar Lead</button>
             </div>
         </div>
     </div>
 
     <script>
         let leads = [];
-        let currentNotesIndex = null;
+        let currentLeadIndex = null;
+        let currentLostIndex = null;
 
-        function saveData() {
+        function saveToLocalStorage() {
             localStorage.setItem("agentbase_leads", JSON.stringify(leads));
         }
 
-        function loadData() {
-            const saved = localStorage.getItem("agentbase_leads");
-            if (saved) {
-                leads = JSON.parse(saved);
-            }
-        }
-
         function updateAll() {
-            updateKPIs();
             renderPipeline();
-            updateProgress();
-            saveData();
+            renderLostLeads();
+            updateKPIs();
+            updateCommissions();
+            saveToLocalStorage();
         }
 
         function updateKPIs() {
+            const activeLeads = leads.filter(l => l.status !== "Perdido");
             const closed = leads.filter(l => l.stage === "Cerrado");
-            
-            document.getElementById("kpi-contacts").innerText = leads.length;
-            document.getElementById("kpi-meetings").innerText = leads.filter(l => l.stage === "Reunión").length;
+            const lost = leads.filter(l => l.status === "Perdido");
+
+            document.getElementById("kpi-contacts").innerText = activeLeads.length;
+            document.getElementById("kpi-meetings").innerText = activeLeads.filter(l => l.stage === "Reunión").length;
             document.getElementById("kpi-closes").innerText = closed.length;
 
+            // Tasa de conversión
+            const total = leads.length;
+            const conversionRate = total > 0 ? Math.round((closed.length / total) * 100) : 0;
+            document.getElementById("kpi-conversion").innerText = conversionRate + "%";
+        }
+
+        function updateCommissions() {
+            const closed = leads.filter(l => l.stage === "Cerrado");
             let installComm = 0;
             let recurringComm = 0;
 
@@ -220,15 +244,17 @@
             const tbody = document.getElementById("pipeline-body");
             tbody.innerHTML = "";
 
-            if (leads.length === 0) {
+            const activeLeads = leads.filter(l => l.status !== "Perdido");
+
+            if (activeLeads.length === 0) {
                 const row = document.createElement("tr");
-                row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads todavía.</td>`;
+                row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads activos.</td>`;
                 tbody.appendChild(row);
                 return;
             }
 
-            leads.forEach((lead, index) => {
-                const hasNotes = lead.notes && lead.notes.trim() !== "";
+            activeLeads.forEach((lead, index) => {
+                const realIndex = leads.indexOf(lead);
                 const row = document.createElement("tr");
                 row.className = "hover:bg-zinc-900/50";
                 row.innerHTML = `
@@ -239,11 +265,11 @@
                     </td>
                     <td class="px-4 py-4 text-right">
                         <div class="flex items-center justify-end gap-x-2">
-                            <button onclick="openNotes(${index})" class="text-xs px-2 py-1 rounded-lg hover:bg-zinc-800 text-zinc-400">
-                                <i class="fa-solid fa-sticky-note ${hasNotes ? 'text-emerald-400' : ''}"></i>
+                            <button onclick="markAsLost(${realIndex})" class="text-xs px-2 py-1 rounded-lg hover:bg-red-500/10 text-red-400">
+                                <i class="fa-solid fa-times"></i>
                             </button>
                             ${lead.stage !== "Cerrado" ? 
-                                `<button onclick="advanceStage(${index})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
+                                `<button onclick="advanceStage(${realIndex})" class="text-xs px-3 py-1.5 rounded-lg hover:bg-zinc-800">Avanzar</button>` : 
                                 `<span class="text-xs text-emerald-400">${lead.plan} ${lead.install ? "+ Inst" : ""}</span>`
                             }
                         </div>
@@ -253,15 +279,49 @@
             });
         }
 
+        function renderLostLeads() {
+            const tbody = document.getElementById("lost-body");
+            tbody.innerHTML = "";
+
+            const lostLeads = leads.filter(l => l.status === "Perdido");
+
+            document.getElementById("lost-count").innerText = lostLeads.length;
+
+            if (lostLeads.length === 0) {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td colspan="4" class="px-6 py-8 text-center text-zinc-500">No hay leads perdidos.</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+
+            lostLeads.forEach((lead) => {
+                const row = document.createElement("tr");
+                row.className = "hover:bg-zinc-900/50";
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-medium">${lead.name}</td>
+                    <td class="px-6 py-4 text-zinc-400">${lead.industry}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full bg-red-500/10 text-red-400">${lead.lostReason || "Sin motivo"}</span>
+                    </td>
+                    <td class="px-6 py-4 text-zinc-400 text-xs">${lead.lostNotes || "-"}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
         function addLead() {
             const name = prompt("Nombre del lead:");
             if (!name) return;
             const industry = prompt("Industria:", "Inmobiliaria");
-            leads.push({ name, industry: industry || "General", stage: "Contactado", notes: "" });
+            leads.push({ 
+                name, 
+                industry: industry || "General", 
+                stage: "Contactado", 
+                status: "Activo",
+                notes: "" 
+            });
             updateAll();
         }
-
-        let currentLeadIndex = null;
 
         function advanceStage(index) {
             const stages = ["Contactado", "Respondió", "Reunión", "Propuesta", "Negociación", "Cerrado"];
@@ -275,6 +335,27 @@
                 leads[index].stage = stages[nextIndex];
                 updateAll();
             }
+        }
+
+        function markAsLost(index) {
+            currentLostIndex = index;
+            document.getElementById("lost-modal").classList.remove("hidden");
+        }
+
+        function confirmLost() {
+            const reason = document.getElementById("lost-reason").value;
+            const notes = document.getElementById("lost-notes").value;
+
+            leads[currentLostIndex].status = "Perdido";
+            leads[currentLostIndex].lostReason = reason;
+            leads[currentLostIndex].lostNotes = notes;
+
+            document.getElementById("lost-modal").classList.add("hidden");
+            updateAll();
+        }
+
+        function closeLostModal() {
+            document.getElementById("lost-modal").classList.add("hidden");
         }
 
         function confirmClose() {
@@ -291,35 +372,6 @@
 
         function closeModal() {
             document.getElementById("close-modal").classList.add("hidden");
-        }
-
-        // Notas
-        function openNotes(index) {
-            currentNotesIndex = index;
-            document.getElementById("notes-text").value = leads[index].notes || "";
-            document.getElementById("notes-modal").classList.remove("hidden");
-        }
-
-        function saveNotes() {
-            const text = document.getElementById("notes-text").value;
-            leads[currentNotesIndex].notes = text;
-            document.getElementById("notes-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeNotesModal() {
-            document.getElementById("notes-modal").classList.add("hidden");
-        }
-
-        function updateProgress() {
-            const contactPercent = Math.min((leads.length / 150) * 100, 100);
-            document.getElementById("bar-contacts").style.width = contactPercent + "%";
-            document.getElementById("progress-contacts").innerText = `${leads.length} / 150`;
-
-            const closedCount = leads.filter(l => l.stage === "Cerrado").length;
-            const closePercent = Math.min((closedCount / 2) * 100, 100);
-            document.getElementById("bar-closes").style.width = closePercent + "%";
-            document.getElementById("progress-closes").innerText = `${closedCount} / 2`;
         }
 
         function init() {
