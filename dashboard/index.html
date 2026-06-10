@@ -11,9 +11,7 @@
         .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; letter-spacing: -0.025em; }
         .elite-card { background: #111113; border: 1px solid #27272a; border-radius: 20px; }
         .metric-value { font-size: 32px; line-height: 1; font-weight: 600; }
-        .lead-row { transition: background-color 0.1s ease; }
         .lead-row:hover { background-color: #18181b; }
-        .stage-badge { font-size: 12px; padding: 2px 10px; border-radius: 9999px; font-weight: 500; }
     </style>
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
@@ -27,12 +25,9 @@
                 </div>
                 <span class="font-display text-2xl font-semibold tracking-[-1.5px]">Agentbase</span>
             </div>
-            
             <div class="flex items-center gap-x-3">
                 <div class="flex items-center gap-x-2.5 pl-4 border-l border-zinc-800">
-                    <div>
-                        <div class="text-sm font-medium">Luis Palacios</div>
-                    </div>
+                    <div class="text-sm font-medium">Luis Palacios</div>
                     <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex items-center justify-center text-xs font-semibold border border-zinc-700">LP</div>
                 </div>
             </div>
@@ -47,9 +42,9 @@
                 <div class="text-4xl font-semibold tracking-[-2px]">Dashboard</div>
                 <div class="text-zinc-400 mt-1">Pipeline de ventas • Agentbase</div>
             </div>
-            <button onclick="showAddLeadModal()" 
+            <button onclick="showAddModal()" 
                     class="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-3xl flex items-center gap-x-2 hover:bg-zinc-100">
-                <i class="fa-solid fa-plus"></i>
+                <i class="fa-solid fa-plus mr-2"></i>
                 <span>Nuevo Lead</span>
             </button>
         </div>
@@ -74,27 +69,21 @@
             </div>
             <div class="elite-card p-6">
                 <div class="text-xs text-zinc-400">META SLP</div>
-                <div class="metric-value mt-2 text-emerald-400" id="kpi-target">10</div>
+                <div class="metric-value mt-2 text-emerald-400">10</div>
             </div>
         </div>
 
-        <!-- Pipeline Table -->
+        <!-- Pipeline -->
         <div class="elite-card overflow-hidden">
             <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
                 <div class="font-semibold">Pipeline Activo</div>
                 <div class="flex gap-x-2">
-                    <input id="search" type="text" placeholder="Buscar..." 
-                           class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-1.5 text-sm w-64"
-                           onkeyup="filterLeads()">
-                    <select id="stage-filter" onchange="filterLeads()" 
-                            class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-1.5 text-sm">
+                    <input id="search" type="text" placeholder="Buscar lead..." 
+                           class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-1.5 text-sm w-64" onkeyup="filterLeads()">
+                    <select id="stage-filter" onchange="filterLeads()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-1.5 text-sm">
                         <option value="">Todas las etapas</option>
-                        <option>Contactado</option>
-                        <option>Respondió</option>
-                        <option>Reunión</option>
-                        <option>Propuesta</option>
-                        <option>Negociación</option>
-                        <option>Cerrado</option>
+                        <option>Contactado</option><option>Respondió</option><option>Reunión</option>
+                        <option>Propuesta</option><option>Negociación</option><option>Cerrado</option>
                     </select>
                 </div>
             </div>
@@ -106,7 +95,7 @@
                         <th class="text-left py-3 px-4">Industria</th>
                         <th class="text-left py-3 px-4">Etapa</th>
                         <th class="text-right py-3 px-6">Valor</th>
-                        <th class="text-center py-3 px-4 w-20">Acciones</th>
+                        <th class="text-center py-3 px-4">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="leads-table"></tbody>
@@ -114,58 +103,39 @@
         </div>
     </div>
 
-    <!-- Add Lead Modal -->
+    <!-- Modal -->
     <div id="modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="elite-card w-full max-w-md p-6">
             <div class="font-semibold text-lg mb-4">Nuevo Lead</div>
-            
             <div class="space-y-4">
-                <div>
-                    <label class="text-xs text-zinc-400">Nombre</label>
-                    <input id="lead-name" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 mt-1">
-                </div>
-                <div>
-                    <label class="text-xs text-zinc-400">Empresa / Clínica</label>
-                    <input id="lead-company" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 mt-1">
-                </div>
+                <div><label class="text-xs text-zinc-400">Nombre completo</label>
+                    <input id="lead-name" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 mt-1"></div>
+                <div><label class="text-xs text-zinc-400">Empresa / Clínica</label>
+                    <input id="lead-company" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 mt-1"></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-zinc-400">Industria</label>
+                    <div><label class="text-xs text-zinc-400">Industria</label>
                         <select id="lead-industry" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 mt-1">
-                            <option>Clínicas</option>
-                            <option>Restaurantes</option>
-                            <option>Inmobiliaria</option>
-                            <option>Retail</option>
-                            <option>Otro</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-zinc-400">Etapa</label>
+                            <option>Clínicas</option><option>Restaurantes</option><option>Inmobiliaria</option><option>Retail</option><option>Otro</option>
+                        </select></div>
+                    <div><label class="text-xs text-zinc-400">Etapa</label>
                         <select id="lead-stage" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 mt-1">
-                            <option>Contactado</option>
-                            <option>Respondió</option>
-                            <option>Reunión</option>
-                            <option>Propuesta</option>
-                            <option>Negociación</option>
-                            <option>Cerrado</option>
-                        </select>
-                    </div>
+                            <option>Contactado</option><option>Respondió</option><option>Reunión</option>
+                            <option>Propuesta</option><option>Negociación</option><option>Cerrado</option>
+                        </select></div>
                 </div>
             </div>
-            
             <div class="flex gap-x-3 mt-6">
                 <button onclick="hideModal()" class="flex-1 py-2.5 border border-zinc-700 rounded-2xl text-sm">Cancelar</button>
-                <button onclick="addLead()" class="flex-1 py-2.5 bg-white text-black rounded-2xl text-sm font-semibold">Guardar Lead</button>
+                <button onclick="saveNewLead()" class="flex-1 py-2.5 bg-white text-black rounded-2xl text-sm font-semibold">Guardar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Data management
-        let leads = JSON.parse(localStorage.getItem('agentbase_leads')) || [];
+        let leads = JSON.parse(localStorage.getItem('agentbase_leads_v2')) || [];
 
-        function saveLeads() {
-            localStorage.setItem('agentbase_leads', JSON.stringify(leads));
+        function saveToStorage() {
+            localStorage.setItem('agentbase_leads_v2', JSON.stringify(leads));
         }
 
         function updateMetrics() {
@@ -180,29 +150,26 @@
             document.getElementById('kpi-conversion').textContent = conversion + '%';
         }
 
-        function renderLeads(filteredLeads = leads) {
+        function renderLeads(filtered = leads) {
             const tbody = document.getElementById('leads-table');
             tbody.innerHTML = '';
 
-            if (filteredLeads.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-400">No hay leads</td></tr>`;
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-400">No hay leads registrados</td></tr>`;
                 return;
             }
 
-            filteredLeads.forEach((lead, index) => {
+            filtered.forEach((lead, index) => {
                 const row = document.createElement('tr');
-                row.className = 'lead-row border-b border-zinc-800 text-sm';
-                
+                row.className = 'border-b border-zinc-800 lead-row text-sm';
                 row.innerHTML = `
                     <td class="px-6 py-4">
                         <div class="font-medium">${lead.name}</div>
                         <div class="text-xs text-zinc-400">${lead.company}</div>
                     </td>
+                    <td class="px-4 py-4"><span class="px-3 py-1 text-xs rounded-full bg-zinc-800">${lead.industry}</span></td>
                     <td class="px-4 py-4">
-                        <span class="px-3 py-1 text-xs rounded-full bg-zinc-800">${lead.industry}</span>
-                    </td>
-                    <td class="px-4 py-4">
-                        <select onchange="changeStage(${index}, this.value)" class="stage-badge bg-zinc-800 border border-zinc-700 text-xs">
+                        <select onchange="updateStage(${index}, this.value)" class="bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-1 text-xs">
                             <option ${lead.stage === 'Contactado' ? 'selected' : ''}>Contactado</option>
                             <option ${lead.stage === 'Respondió' ? 'selected' : ''}>Respondió</option>
                             <option ${lead.stage === 'Reunión' ? 'selected' : ''}>Reunión</option>
@@ -211,11 +178,9 @@
                             <option ${lead.stage === 'Cerrado' ? 'selected' : ''}>Cerrado</option>
                         </select>
                     </td>
-                    <td class="px-6 py-4 text-right font-medium">$${lead.value || 14990}</td>
+                    <td class="px-6 py-4 text-right font-medium">$${lead.value}</td>
                     <td class="px-4 py-4 text-center">
-                        <button onclick="deleteLead(${index})" class="text-zinc-400 hover:text-red-400">
-                            <i class="fa-solid fa-trash text-xs"></i>
-                        </button>
+                        <button onclick="deleteLead(${index})" class="text-zinc-400 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -226,19 +191,17 @@
             const search = document.getElementById('search').value.toLowerCase();
             const stage = document.getElementById('stage-filter').value;
 
-            const filtered = leads.filter(lead => {
-                const matchesSearch = lead.name.toLowerCase().includes(search) || 
-                                     lead.company.toLowerCase().includes(search);
-                const matchesStage = !stage || lead.stage === stage;
-                return matchesSearch && matchesStage;
+            const filtered = leads.filter(l => {
+                const matchSearch = l.name.toLowerCase().includes(search) || l.company.toLowerCase().includes(search);
+                const matchStage = !stage || l.stage === stage;
+                return matchSearch && matchStage;
             });
-
             renderLeads(filtered);
         }
 
-        function changeStage(index, newStage) {
+        function updateStage(index, newStage) {
             leads[index].stage = newStage;
-            saveLeads();
+            saveToStorage();
             updateMetrics();
             renderLeads();
         }
@@ -246,23 +209,23 @@
         function deleteLead(index) {
             if (confirm('¿Eliminar este lead?')) {
                 leads.splice(index, 1);
-                saveLeads();
+                saveToStorage();
                 updateMetrics();
                 renderLeads();
             }
         }
 
-        function showAddLeadModal() {
+        function showAddModal() {
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modal').classList.add('flex');
         }
 
         function hideModal() {
-            document.getElementById('modal').classList.remove('flex');
             document.getElementById('modal').classList.add('hidden');
+            document.getElementById('modal').classList.remove('flex');
         }
 
-        function addLead() {
+        function saveNewLead() {
             const name = document.getElementById('lead-name').value.trim();
             const company = document.getElementById('lead-company').value.trim();
             const industry = document.getElementById('lead-industry').value;
@@ -275,25 +238,23 @@
 
             leads.unshift({
                 id: Date.now(),
-                name: name,
-                company: company,
-                industry: industry,
-                stage: stage,
-                value: 14990,
-                createdAt: new Date().toISOString()
+                name,
+                company,
+                industry,
+                stage,
+                value: 14990
             });
 
-            saveLeads();
+            saveToStorage();
             updateMetrics();
             renderLeads();
+            hideModal();
 
-            // Clear form
+            // Limpiar formulario
             document.getElementById('lead-name').value = '';
             document.getElementById('lead-company').value = '';
-            hideModal();
         }
 
-        // Initialize
         function init() {
             renderLeads();
             updateMetrics();
