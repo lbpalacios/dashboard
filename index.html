@@ -3,627 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agentbase • CRM</title>
+    <title>Agentbase • Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        .font-display { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; letter-spacing: -0.025em; }
-        .elite-card { background: #111113; border: 1px solid #27272a; border-radius: 20px; }
-        .metric-value { font-size: 34px; line-height: 1; font-weight: 600; }
-        .section-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #22c55e;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .metric-card {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: #71717a;
+        }
+
+        .elite-card {
+            background: #111113;
+            border: 1px solid #27272a;
+            border-radius: 20px;
+        }
+
+        .nav-active {
+            background-color: #18181b;
+            color: white;
+            border-radius: 12px;
+        }
+
+        .lead-row {
+            transition: background-color 0.1s ease;
+        }
+        
+        .lead-row:hover {
+            background-color: #18181b;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="bg-[#0A0A0A] text-zinc-200">
     
+    <!-- Top Navigation -->
     <div class="border-b border-zinc-800 bg-[#0A0A0A]/95 sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
+            <div class="flex items-center gap-x-8">
+                <!-- Logo -->
                 <div class="flex items-center gap-x-3">
                     <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-robot text-white text-lg"></i>
+                        <i class="fa-solid fa-robot text-white text-xl"></i>
                     </div>
-                    <span class="font-display text-2xl font-semibold tracking-[-1.2px]">Agentbase</span>
+                    <div>
+                        <span class="font-display text-2xl font-semibold tracking-[-1.5px]">Agentbase</span>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex items-center gap-x-1 text-sm">
+                    <a href="#" class="px-4 py-2 nav-active flex items-center gap-x-2 text-sm font-medium">
+                        <i class="fa-solid fa-chart-line w-4"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="px-4 py-2 hover:bg-zinc-900 flex items-center gap-x-2 text-sm font-medium text-zinc-400 hover:text-zinc-200 rounded-xl">
+                        <i class="fa-solid fa-users w-4"></i>
+                        <span>Clientes</span>
+                    </a>
+                    <a href="#" class="px-4 py-2 hover:bg-zinc-900 flex items-center gap-x-2 text-sm font-medium text-zinc-400 hover:text-zinc-200 rounded-xl">
+                        <i class="fa-solid fa-industry w-4"></i>
+                        <span>Industrias</span>
+                    </a>
                 </div>
             </div>
+
             <div class="flex items-center gap-x-4">
-                <button onclick="exportToCSV()" class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400">
-                    <i class="fa-solid fa-download text-xs"></i>
-                    <span class="text-xs font-medium">Exportar CSV</span>
-                </button>
-                <button onclick="resetData()" class="flex items-center gap-x-2 px-4 py-2 text-sm rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-red-400">
-                    <i class="fa-solid fa-trash text-xs"></i>
-                    <span class="text-xs font-medium">Resetear</span>
-                </button>
-                <div class="flex items-center gap-x-3 pl-4 border-l border-zinc-800">
-                    <div class="flex items-center gap-x-2.5">
+                <!-- User -->
+                <div class="flex items-center gap-x-3">
+                    <div class="text-right">
                         <div class="text-sm font-medium">Luis Palacios</div>
-                        <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex items-center justify-center text-xs font-semibold border border-zinc-700">LP</div>
+                        <div class="text-[10px] text-zinc-500">Fundador</div>
+                    </div>
+                    <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center text-sm font-semibold border border-zinc-700">
+                        LP
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="max-w-screen-2xl mx-auto px-8 py-10">
-        <div class="mb-8">
-            <div class="text-3xl font-semibold tracking-[-1.5px]">Buenos días, Luis</div>
-            <div class="text-zinc-400 mt-1 text-[15px]">Aquí tienes el resumen de tu pipeline.</div>
-        </div>
-
-        <!-- Calendario -->
-        <div class="max-w-[720px] mb-10">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <div class="section-title">Actividad del mes</div>
-                <div class="flex items-center gap-x-2 text-sm">
-                    <button onclick="prevMonth()" class="w-8 h-8 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <div id="calendar-month" class="font-medium text-sm w-36 text-center"></div>
-                    <button onclick="nextMonth()" class="w-8 h-8 flex items-center justify-center hover:bg-zinc-900 rounded-2xl border border-zinc-800"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                </div>
+    <div class="max-w-screen-2xl mx-auto px-8 py-8">
+        
+        <!-- Header -->
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <div class="text-4xl font-semibold tracking-[-2px]">Buenos días, Luis</div>
+                <div class="text-zinc-400 mt-1">Aquí tienes el panorama de tu pipeline de Agentbase</div>
             </div>
-            <div class="elite-card p-5">
-                <div class="grid grid-cols-7 gap-1 text-center text-xs text-zinc-400 mb-2">
-                    <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
-                </div>
-                <div id="monthly-calendar" class="grid grid-cols-7 gap-1"></div>
+            
+            <div class="flex items-center gap-x-3">
+                <button onclick="addLead()" 
+                        class="flex items-center gap-x-2 px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-3xl hover:bg-zinc-100 transition-colors">
+                    <i class="fa-solid fa-plus mr-2"></i>
+                    <span>Nuevo Lead</span>
+                </button>
             </div>
         </div>
 
-        <!-- KPIs -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">CONTACTOS ACTIVOS</div><div class="metric-value mt-3" id="kpi-contacts">0</div></div>
-            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">REUNIONES</div><div class="metric-value mt-3" id="kpi-meetings">0</div></div>
-            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">CIERRES</div><div class="metric-value mt-3" id="kpi-closes">0</div></div>
-            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">CONVERSIÓN</div><div class="metric-value mt-3 text-emerald-400" id="kpi-conversion">0%</div></div>
-            <div class="elite-card p-6"><div class="text-xs font-medium text-zinc-400">COMISIÓN TOTAL</div><div class="metric-value mt-3 text-emerald-400" id="kpi-commission">$0</div></div>
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+            
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">CLIENTES OBJETIVO</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-target">10</div>
+                        <div class="text-emerald-400 text-xs mt-1">Meta SLP</div>
+                    </div>
+                    <i class="fa-solid fa-bullseye text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">LEADS ACTIVOS</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-leads">47</div>
+                        <div class="text-emerald-400 text-xs mt-1">+8 esta semana</div>
+                    </div>
+                    <i class="fa-solid fa-users text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">REUNIONES</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-meetings">12</div>
+                        <div class="text-emerald-400 text-xs mt-1">Esta semana</div>
+                    </div>
+                    <i class="fa-solid fa-calendar-check text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">CIERRES</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-closes">3</div>
+                        <div class="text-emerald-400 text-xs mt-1">Este mes</div>
+                    </div>
+                    <i class="fa-solid fa-handshake text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">TASA CONVERSIÓN</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter text-emerald-400" id="metric-conversion">24%</div>
+                    </div>
+                    <i class="fa-solid fa-chart-line text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">INGRESOS POTENCIALES</div>
+                        <div class="text-3xl font-semibold mt-3 tracking-tighter text-emerald-400" id="metric-revenue">$449k</div>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-6">
+        <div class="grid lg:grid-cols-12 gap-6">
             
             <!-- Pipeline -->
-            <div class="lg:col-span-2">
+            <div class="lg:col-span-7">
                 <div class="flex items-center justify-between mb-4 px-1">
-                    <div class="section-title">Pipeline Activo</div>
-                    <button onclick="addLead()" class="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-3xl flex items-center gap-x-2">+ Agregar Lead</button>
+                    <div class="section-header">PIPELINE ACTIVO</div>
+                    <div class="text-xs text-zinc-400">47 leads • 3 esta semana</div>
                 </div>
-
-                <!-- Filtros -->
-                <div class="flex flex-wrap gap-3 mb-4">
-                    <input id="search-input" type="text" placeholder="Buscar lead..." class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm w-64" onkeyup="filterPipeline()">
-                    <select id="filter-stage" onchange="filterPipeline()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm">
-                        <option value="">Todas las etapas</option>
-                        <option>Contactado</option><option>Respondió</option><option>Reunión</option><option>Propuesta</option><option>Negociación</option><option>Cerrado</option>
-                    </select>
-                    <select id="filter-source" onchange="filterPipeline()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm">
-                        <option value="">Todas las fuentes</option>
-                        <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
-                    </select>
-                    <button onclick="clearFilters()" class="px-4 py-2 text-sm rounded-2xl border border-zinc-700 hover:bg-zinc-800">Limpiar</button>
-                </div>
-
+                
                 <div class="elite-card overflow-hidden">
-                    <table class="w-full text-sm">
-                        <thead class="bg-zinc-950"><tr class="text-xs text-zinc-400">
-                            <th class="text-left px-6 py-4">Lead</th>
-                            <th class="text-left px-4 py-4">WhatsApp</th>
-                            <th class="text-left px-4 py-4">Fuente</th>
-                            <th class="text-left px-4 py-4">Etapa</th>
-                            <th class="w-12"></th>
-                        </tr></thead>
-                        <tbody id="pipeline-body" class="divide-y divide-zinc-800"></tbody>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-zinc-800 text-xs text-zinc-400">
+                                <th class="text-left py-3 px-6 font-medium">Lead</th>
+                                <th class="text-left py-3 px-4 font-medium">Industria</th>
+                                <th class="text-left py-3 px-4 font-medium">Etapa</th>
+                                <th class="text-right py-3 px-6 font-medium">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pipeline-body" class="text-sm">
+                            <!-- Populated by JS -->
+                        </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Comisiones -->
-            <div>
-                <div class="section-title mb-4 px-1">Comisiones</div>
-                <div class="elite-card p-6 space-y-5">
-                    <div class="flex justify-between"><span class="text-zinc-400 text-sm">Instalación</span><span class="font-semibold" id="comm-install">$0</span></div>
-                    <div class="flex justify-between"><span class="text-zinc-400 text-sm">Recurrente</span><span class="font-semibold" id="comm-recurring">$0</span></div>
-                    <div class="pt-4 border-t border-zinc-800 flex justify-between"><span class="font-medium">Total</span><span class="font-semibold text-2xl text-emerald-400" id="comm-total">$0</span></div>
+            <!-- Right Column -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Weekly Focus -->
+                <div>
+                    <div class="section-header mb-4 px-1">ENFOQUE SEMANAL</div>
+                    <div class="elite-card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <div class="font-semibold">Clínicas y Consultorios</div>
+                                <div class="text-xs text-zinc-400">Semana actual • 8 leads</div>
+                            </div>
+                            <div class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full">Activo</div>
+                        </div>
+                        
+                        <div class="w-full bg-zinc-800 rounded-full h-2 mb-2">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                        <div class="text-xs text-zinc-400">5/10 clientes objetivo</div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Leads Perdidos -->
-            <div class="lg:col-span-3 mt-4">
-                <div class="flex items-center justify-between mb-4 px-1">
-                    <div class="section-title">Leads Perdidos</div>
-                    <div id="lost-count" class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400 font-medium"></div>
+                <!-- Recent Activity -->
+                <div>
+                    <div class="section-header mb-4 px-1">ACTIVIDAD RECIENTE</div>
+                    <div class="elite-card divide-y divide-zinc-800 text-sm">
+                        <div class="px-6 py-4 flex gap-x-4">
+                            <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                                <i class="fa-solid fa-user text-xs"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm">Nueva reunión agendada con <span class="font-medium">Dr. Martínez</span></div>
+                                <div class="text-xs text-zinc-400 mt-0.5">Hace 2 horas</div>
+                            </div>
+                        </div>
+                        <div class="px-6 py-4 flex gap-x-4">
+                            <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex-shrink-0 flex items-center justify-center">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm">Propuesta enviada a <span class="font-medium">Clínica San José</span></div>
+                                <div class="text-xs text-zinc-400 mt-0.5">Ayer</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="elite-card overflow-hidden">
-                    <table class="w-full text-sm">
-                        <thead class="bg-zinc-950"><tr class="text-xs text-zinc-400">
-                            <th class="text-left px-6 py-4">Lead</th>
-                            <th class="text-left px-5 py-4">Industria</th>
-                            <th class="text-left px-5 py-4">Motivo</th>
-                            <th class="text-left px-5 py-4">Notas</th>
-                        </tr></thead>
-                        <tbody id="lost-body" class="divide-y divide-zinc-800"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="add-lead-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="elite-card w-full max-w-md p-7">
-            <div class="font-semibold text-xl mb-6">Nuevo Lead</div>
-            <div class="space-y-5">
-                <div><input id="new-name" type="text" placeholder="Nombre" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3"></div>
-                <div><input id="new-industry" type="text" value="Inmobiliaria" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3"></div>
-                <div><input id="new-whatsapp" type="text" placeholder="WhatsApp" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3"></div>
-                <div><select id="new-source" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3">
-                    <option>Instagram</option><option>Web</option><option>Referido</option><option>LinkedIn</option><option>Otro</option>
-                </select></div>
-            </div>
-            <div class="flex gap-x-3 mt-7">
-                <button onclick="closeAddModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
-                <button onclick="saveNewLead()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-sm font-semibold">Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="close-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="elite-card w-full max-w-md p-7">
-            <div class="font-semibold text-xl mb-6">Cerrar Lead</div>
-            <div class="space-y-5">
-                <select id="plan-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3">
-                    <option value="9990">$9,990</option>
-                    <option value="14990">$14,990</option>
-                    <option value="34990">$34,990</option>
-                </select>
-                <div class="flex items-center gap-x-3"><input type="checkbox" id="install-check"><label>Incluye instalación ($5,000)</label></div>
-            </div>
-            <div class="flex gap-x-3 mt-7">
-                <button onclick="closeCloseModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
-                <button onclick="confirmClose()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-sm font-semibold">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="lost-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="elite-card w-full max-w-md p-7">
-            <div class="font-semibold text-xl mb-6">Descartar Lead</div>
-            <div class="space-y-5">
-                <select id="lost-reason" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3">
-                    <option>Precio</option><option>Competencia</option><option>No respondió</option><option>Timing</option><option>Sin presupuesto</option><option>Otro</option>
-                </select>
-                <textarea id="lost-notes" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 h-20 resize-none"></textarea>
-            </div>
-            <div class="flex gap-x-3 mt-7">
-                <button onclick="closeLostModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
-                <button onclick="confirmLost()" class="flex-1 py-3 rounded-2xl bg-red-600 text-sm font-semibold">Descartar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="followup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="elite-card w-full max-w-md p-7">
-            <div class="font-semibold text-xl mb-6">Actualizar Seguimiento</div>
-            <div class="space-y-5">
-                <div><label class="text-xs text-zinc-400">Fecha último contacto</label><input id="followup-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1"></div>
-                <div><label class="text-xs text-zinc-400">Próxima acción</label><input id="followup-action" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1"></div>
-                <div><label class="text-xs text-zinc-400">Fecha próxima acción</label><input id="followup-action-date" type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 mt-1"></div>
-            </div>
-            <div class="flex gap-x-3 mt-7">
-                <button onclick="closeFollowupModal()" class="flex-1 py-3 rounded-2xl border border-zinc-700">Cancelar</button>
-                <button onclick="saveFollowup()" class="flex-1 py-3 rounded-2xl bg-emerald-600 text-sm font-semibold">Guardar</button>
             </div>
         </div>
     </div>
 
     <script>
-        let leads = [];
-        let currentLeadIndex = null;
-        let currentLostIndex = null;
-        let currentFollowupIndex = null;
-        let currentMonth = new Date();
+        // Sample data
+        let leads = [
+            { id: 1, name: "Dr. Roberto Hernández", company: "Clínica Vida", industry: "Clínicas", stage: "Reunión", value: 14990, date: "2026-02-12" },
+            { id: 2, name: "María González", company: "Inmobiliaria Norte", industry: "Inmobiliaria", stage: "Propuesta", value: 14990, date: "2026-02-10" },
+            { id: 3, name: "Restaurante El Patio", company: "El Patio", industry: "Restaurantes", stage: "Negociación", value: 14990, date: "2026-02-08" },
+            { id: 4, name: "Clínica Dental Sonrisa", company: "Sonrisa", industry: "Clínicas", stage: "Cerrado", value: 14990, date: "2026-02-05" },
+        ];
 
-        function saveData() { localStorage.setItem("agentbase_leads", JSON.stringify(leads)); }
+        function renderPipeline(filteredLeads = leads) {
+            const tbody = document.getElementById('pipeline-body');
+            tbody.innerHTML = '';
 
-        function updateAll() {
-            renderPipeline();
-            renderLostLeads();
-            renderMonthlyCalendar();
-            updateKPIs();
-            updateCommissions();
-            saveData();
-        }
-
-        function updateKPIs() {
-            const active = leads.filter(l => l.status !== "Perdido");
-            const closed = leads.filter(l => l.stage === "Cerrado");
-            document.getElementById("kpi-contacts").innerText = active.length;
-            document.getElementById("kpi-meetings").innerText = active.filter(l => l.stage === "Reunión").length;
-            document.getElementById("kpi-closes").innerText = closed.length;
-            const rate = leads.length > 0 ? Math.round((closed.length / leads.length) * 100) : 0;
-            document.getElementById("kpi-conversion").innerText = rate + "%";
-        }
-
-        function updateCommissions() {
-            const closed = leads.filter(l => l.stage === "Cerrado");
-            let install = 0, recurring = 0;
-            closed.forEach(l => {
-                if (l.install === true) install += 5000;
-                if (l.plan) {
-                    const val = parseInt(l.plan);
-                    if (!isNaN(val)) recurring += val * 0.12;
-                }
-            });
-            document.getElementById("comm-install").innerText = "$" + install.toLocaleString();
-            document.getElementById("comm-recurring").innerText = "$" + Math.round(recurring).toLocaleString();
-            document.getElementById("comm-total").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
-            document.getElementById("kpi-commission").innerText = "$" + (install + Math.round(recurring)).toLocaleString();
-        }
-
-        function renderMonthlyCalendar() {
-            const container = document.getElementById("monthly-calendar");
-            container.innerHTML = "";
-            const year = currentMonth.getFullYear();
-            const month = currentMonth.getMonth();
-            document.getElementById("calendar-month").innerText = currentMonth.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const dailyGoal = 8;
-
-            for (let i = 0; i < firstDay; i++) {
-                const empty = document.createElement("div"); empty.className = "h-9"; container.appendChild(empty);
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month, day);
-                const dateStr = date.toISOString().split("T")[0];
-                const count = leads.filter(l => l.lastContact === dateStr).length;
-                const met = count >= dailyGoal;
-                const dayEl = document.createElement("div");
-                dayEl.className = `h-9 flex flex-col items-center justify-center rounded-2xl text-xs ${met ? 'bg-emerald-500/15 text-emerald-400' : count > 0 ? 'bg-red-500/15 text-red-400' : 'bg-zinc-900 text-zinc-400'}`;
-                dayEl.innerHTML = `<div class="font-medium">${day}</div><div class="text-[9px] opacity-70 -mt-0.5">${count}</div>`;
-                container.appendChild(dayEl);
-            }
-        }
-
-        function prevMonth() { currentMonth.setMonth(currentMonth.getMonth() - 1); renderMonthlyCalendar(); }
-        function nextMonth() { currentMonth.setMonth(currentMonth.getMonth() + 1); renderMonthlyCalendar(); }
-
-        function filterPipeline() {
-            const search = document.getElementById("search-input").value.toLowerCase();
-            const stageFilter = document.getElementById("filter-stage").value;
-            const sourceFilter = document.getElementById("filter-source").value;
-
-            const tbody = document.getElementById("pipeline-body");
-            tbody.innerHTML = "";
-
-            const filtered = leads.filter(lead => {
-                const matchSearch = lead.name.toLowerCase().includes(search);
-                const matchStage = !stageFilter || lead.stage === stageFilter;
-                const matchSource = !sourceFilter || lead.source === sourceFilter;
-                return matchSearch && matchStage && matchSource && lead.status !== "Perdido";
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-zinc-500">No se encontraron leads.</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(lead => {
-                const idx = leads.indexOf(lead);
-                const row = document.createElement("tr");
+            filteredLeads.forEach(lead => {
+                const row = document.createElement('tr');
+                row.className = `lead-row border-b border-zinc-800 last:border-0`;
+                
                 row.innerHTML = `
-                    <td class="px-6 py-4 font-medium">${lead.name}</td>
-                    <td class="px-4 py-4">${lead.whatsapp ? `<a href="https://wa.me/${lead.whatsapp}" target="_blank" class="text-emerald-400 hover:underline"><i class="fa-brands fa-whatsapp"></i> Chat</a>` : `<span class="text-zinc-500 text-xs">—</span>`}</td>
-                    <td class="px-4 py-4 text-xs text-zinc-400">${lead.source || "-"}</td>
-                    <td class="px-4 py-4"><span class="px-3.5 py-1 text-xs rounded-3xl bg-emerald-500/10 text-emerald-400">${lead.stage}</span></td>
-                    <td class="px-4 py-4">
-                        <div class="flex gap-x-1 justify-end">
-                            <button onclick="openFollowupModal(${idx})" class="px-2 py-1 text-emerald-400 hover:bg-emerald-500/10 rounded-2xl"><i class="fa-solid fa-calendar-check text-xs"></i></button>
-                            <button onclick="markAsLost(${idx})" class="px-2 py-1 text-red-400 hover:bg-red-500/10 rounded-2xl"><i class="fa-solid fa-times text-xs"></i></button>
-                            <button onclick="advanceStage(${idx})" class="px-3 py-1 text-xs rounded-2xl hover:bg-zinc-800">Avanzar</button>
-                        </div>
-                    </td>`;
+                    <td class="py-4 px-6">
+                        <div class="font-medium">${lead.name}</div>
+                        <div class="text-xs text-zinc-400">${lead.company}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 text-xs rounded-full bg-zinc-800">${lead.industry}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getStageColor(lead.stage)}">${lead.stage}</span>
+                    </td>
+                    <td class="py-4 px-6 text-right font-medium">$${lead.value.toLocaleString()}</td>
+                `;
                 tbody.appendChild(row);
             });
         }
 
-        function clearFilters() {
-            document.getElementById("search-input").value = "";
-            document.getElementById("filter-stage").value = "";
-            document.getElementById("filter-source").value = "";
-            filterPipeline();
-        }
-
-        function renderPipeline() {
-            filterPipeline();
-        }
-
-        function renderLostLeads() {
-            const tbody = document.getElementById("lost-body");
-            tbody.innerHTML = "";
-            const lost = leads.filter(l => l.status === "Perdido");
-            document.getElementById("lost-count").innerText = lost.length + " perdidos";
-            if (lost.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-10 text-center text-zinc-500">No hay leads perdidos.</td></tr>`;
-                return;
-            }
-            lost.forEach(lead => {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td class="px-6 py-4">${lead.name}</td><td class="px-5 py-4 text-zinc-400">${lead.industry}</td><td class="px-5 py-4"><span class="px-3 py-1 text-xs rounded-3xl bg-red-500/10 text-red-400">${lead.lostReason}</span></td><td class="px-5 py-4 text-xs text-zinc-400">${lead.lostNotes || "-"}</td>`;
-                tbody.appendChild(row);
-            });
-        }
-
-        function addLead() { document.getElementById("add-lead-modal").classList.remove("hidden"); }
-        function closeAddModal() { document.getElementById("add-lead-modal").classList.add("hidden"); }
-
-        function saveNewLead() {
-            const lead = {
-                name: document.getElementById("new-name").value,
-                industry: document.getElementById("new-industry").value,
-                whatsapp: document.getElementById("new-whatsapp").value,
-                source: document.getElementById("new-source").value,
-                stage: "Contactado",
-                status: "Activo",
-                lastContact: new Date().toISOString().split("T")[0],
-                history: []
+        function getStageColor(stage) {
+            const colors = {
+                'Contactado': 'bg-blue-500/10 text-blue-400',
+                'Respondió': 'bg-amber-500/10 text-amber-400',
+                'Reunión': 'bg-purple-500/10 text-purple-400',
+                'Propuesta': 'bg-orange-500/10 text-orange-400',
+                'Negociación': 'bg-pink-500/10 text-pink-400',
+                'Cerrado': 'bg-emerald-500/10 text-emerald-400'
             };
-            if (!lead.name) return;
-            leads.push(lead);
-            closeAddModal();
-            updateAll();
+            return colors[stage] || 'bg-zinc-700 text-zinc-300';
         }
 
-        function advanceStage(index) {
-            const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
-            const current = leads[index].stage;
-            const nextIndex = stages.indexOf(current) + 1;
-
-            if (!leads[index].history) leads[index].history = [];
-            leads[index].history.push({
-                date: new Date().toISOString(),
-                action: `Avanzó a ${stages[nextIndex] || current}`
-            });
-
-            if (stages[nextIndex] === "Cerrado") {
-                currentLeadIndex = index;
-                document.getElementById("close-modal").classList.remove("hidden");
-            } else {
-                leads[index].stage = stages[nextIndex];
-                leads[index].lastContact = new Date().toISOString().split("T")[0];
-                updateAll();
-            }
+        function updateMetrics() {
+            document.getElementById('metric-leads').textContent = leads.length;
+            document.getElementById('metric-meetings').textContent = leads.filter(l => l.stage === 'Reunión').length;
+            document.getElementById('metric-closes').textContent = leads.filter(l => l.stage === 'Cerrado').length;
         }
 
-        function confirmClose() {
-            const plan = document.getElementById("plan-select").value;
-            const hasInstall = document.getElementById("install-check").checked;
-
-            if (!leads[currentLeadIndex].history) leads[currentLeadIndex].history = [];
-            leads[currentLeadIndex].history.push({
-                date: new Date().toISOString(),
-                action: `Cerrado con plan $${plan}${hasInstall ? ' + instalación' : ''}`
-            });
-
-            leads[currentLeadIndex].stage = "Cerrado";
-            leads[currentLeadIndex].plan = plan;
-            leads[currentLeadIndex].install = hasInstall;
-            leads[currentLeadIndex].lastContact = new Date().toISOString().split("T")[0];
-
-            document.getElementById("close-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeCloseModal() { document.getElementById("close-modal").classList.add("hidden"); }
-
-        function markAsLost(index) {
-            currentLostIndex = index;
-            document.getElementById("lost-modal").classList.remove("hidden");
-        }
-
-        function confirmLost() {
-            if (!leads[currentLostIndex].history) leads[currentLostIndex].history = [];
-            leads[currentLostIndex].history.push({
-                date: new Date().toISOString(),
-                action: `Descartado - ${document.getElementById("lost-reason").value}`
-            });
-
-            leads[currentLostIndex].status = "Perdido";
-            leads[currentLostIndex].lostReason = document.getElementById("lost-reason").value;
-            leads[currentLostIndex].lostNotes = document.getElementById("lost-notes").value;
-            document.getElementById("lost-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeLostModal() { document.getElementById("lost-modal").classList.add("hidden"); }
-
-        function openFollowupModal(index) {
-            currentFollowupIndex = index;
-            const lead = leads[index];
-            document.getElementById("followup-date").value = lead.lastContact || "";
-            document.getElementById("followup-action").value = lead.nextAction || "";
-            document.getElementById("followup-action-date").value = lead.nextActionDate || "";
-            document.getElementById("followup-modal").classList.remove("hidden");
-        }
-
-        function saveFollowup() {
-            const lead = leads[currentFollowupIndex];
-            lead.lastContact = document.getElementById("followup-date").value;
-            lead.nextAction = document.getElementById("followup-action").value;
-            lead.nextActionDate = document.getElementById("followup-action-date").value;
-
-            if (!lead.history) lead.history = [];
-            lead.history.push({
-                date: new Date().toISOString(),
-                action: `Seguimiento actualizado: ${lead.nextAction || 'Sin acción'}`
-            });
-
-            document.getElementById("followup-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeFollowupModal() { document.getElementById("followup-modal").classList.add("hidden"); }
-
-        function exportToCSV() {
-            if (leads.length === 0) {
-                alert("No hay datos para exportar");
-                return;
-            }
-
-            const headers = ["Nombre", "Industria", "WhatsApp", "Fuente", "Etapa", "Estado", "Plan", "Instalación", "Último Contacto", "Próxima Acción", "Fecha Próxima Acción", "Motivo Pérdida", "Notas"];
-            const rows = leads.map(lead => [
-                lead.name || "",
-                lead.industry || "",
-                lead.whatsapp || "",
-                lead.source || "",
-                lead.stage || "",
-                lead.status || "Activo",
-                lead.plan || "",
-                lead.install ? "Sí" : "No",
-                lead.lastContact || "",
-                lead.nextAction || "",
-                lead.nextActionDate || "",
-                lead.lostReason || "",
-                lead.lostNotes || ""
-            ]);
-
-            let csvContent = headers.join(",") + "\n";
-            rows.forEach(row => {
-                csvContent += row.map(field => `"${field}"`).join(",") + "\n";
-            });
-
-            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "agentbase_leads.csv");
-            link.style.visibility = "hidden";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function addLead() { document.getElementById("add-lead-modal").classList.remove("hidden"); }
-        function closeAddModal() { document.getElementById("add-lead-modal").classList.add("hidden"); }
-
-        function saveNewLead() {
-            const lead = {
-                name: document.getElementById("new-name").value,
-                industry: document.getElementById("new-industry").value,
-                whatsapp: document.getElementById("new-whatsapp").value,
-                source: document.getElementById("new-source").value,
+        function addLead() {
+            const name = prompt("Nombre del lead:");
+            if (!name) return;
+            
+            const company = prompt("Empresa / Clínica:");
+            const industry = prompt("Industria (Clínicas, Restaurantes, Inmobiliaria):");
+            
+            leads.unshift({
+                id: Date.now(),
+                name: name,
+                company: company || "Sin empresa",
+                industry: industry || "Otro",
                 stage: "Contactado",
-                status: "Activo",
-                lastContact: new Date().toISOString().split("T")[0],
-                history: []
-            };
-            if (!lead.name) return;
-            leads.push(lead);
-            closeAddModal();
-            updateAll();
-        }
-
-        function advanceStage(index) {
-            const stages = ["Contactado","Respondió","Reunión","Propuesta","Negociación","Cerrado"];
-            const current = leads[index].stage;
-            const nextIndex = stages.indexOf(current) + 1;
-
-            if (!leads[index].history) leads[index].history = [];
-            leads[index].history.push({
-                date: new Date().toISOString(),
-                action: `Avanzó a ${stages[nextIndex] || current}`
+                value: 14990,
+                date: new Date().toISOString().split('T')[0]
             });
-
-            if (stages[nextIndex] === "Cerrado") {
-                currentLeadIndex = index;
-                document.getElementById("close-modal").classList.remove("hidden");
-            } else {
-                leads[index].stage = stages[nextIndex];
-                leads[index].lastContact = new Date().toISOString().split("T")[0];
-                updateAll();
-            }
+            
+            renderPipeline();
+            updateMetrics();
         }
 
-        function confirmClose() {
-            const plan = document.getElementById("plan-select").value;
-            const hasInstall = document.getElementById("install-check").checked;
-
-            if (!leads[currentLeadIndex].history) leads[currentLeadIndex].history = [];
-            leads[currentLeadIndex].history.push({
-                date: new Date().toISOString(),
-                action: `Cerrado con plan $${plan}${hasInstall ? ' + instalación' : ''}`
-            });
-
-            leads[currentLeadIndex].stage = "Cerrado";
-            leads[currentLeadIndex].plan = plan;
-            leads[currentLeadIndex].install = hasInstall;
-            leads[currentLeadIndex].lastContact = new Date().toISOString().split("T")[0];
-
-            document.getElementById("close-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeCloseModal() { document.getElementById("close-modal").classList.add("hidden"); }
-
-        function markAsLost(index) {
-            currentLostIndex = index;
-            document.getElementById("lost-modal").classList.remove("hidden");
-        }
-
-        function confirmLost() {
-            if (!leads[currentLostIndex].history) leads[currentLostIndex].history = [];
-            leads[currentLostIndex].history.push({
-                date: new Date().toISOString(),
-                action: `Descartado - ${document.getElementById("lost-reason").value}`
-            });
-
-            leads[currentLostIndex].status = "Perdido";
-            leads[currentLostIndex].lostReason = document.getElementById("lost-reason").value;
-            leads[currentLostIndex].lostNotes = document.getElementById("lost-notes").value;
-            document.getElementById("lost-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeLostModal() { document.getElementById("lost-modal").classList.add("hidden"); }
-
-        function openFollowupModal(index) {
-            currentFollowupIndex = index;
-            const lead = leads[index];
-            document.getElementById("followup-date").value = lead.lastContact || "";
-            document.getElementById("followup-action").value = lead.nextAction || "";
-            document.getElementById("followup-action-date").value = lead.nextActionDate || "";
-            document.getElementById("followup-modal").classList.remove("hidden");
-        }
-
-        function saveFollowup() {
-            const lead = leads[currentFollowupIndex];
-            lead.lastContact = document.getElementById("followup-date").value;
-            lead.nextAction = document.getElementById("followup-action").value;
-            lead.nextActionDate = document.getElementById("followup-action-date").value;
-
-            if (!lead.history) lead.history = [];
-            lead.history.push({
-                date: new Date().toISOString(),
-                action: `Seguimiento actualizado: ${lead.nextAction || 'Sin acción'}`
-            });
-
-            document.getElementById("followup-modal").classList.add("hidden");
-            updateAll();
-        }
-
-        function closeFollowupModal() { document.getElementById("followup-modal").classList.add("hidden"); }
-
-        function resetData() {
-            if (confirm("¿Borrar todos los datos?")) {
-                localStorage.removeItem("agentbase_leads");
-                leads = [];
-                updateAll();
-            }
-        }
-
+        // Initialize
         function init() {
-            const saved = localStorage.getItem("agentbase_leads");
-            if (saved) leads = JSON.parse(saved);
-            updateAll();
+            renderPipeline();
+            updateMetrics();
+            
+            // Simple search
+            const searchInput = document.createElement('input');
+            searchInput.placeholder = "Buscar lead...";
+            searchInput.className = "bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm w-64";
+            
+            // For demo purposes, we'll keep it simple
         }
 
         window.onload = init;
