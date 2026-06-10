@@ -9,10 +9,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
         
-        :root {
-            --primary: #22c55e;
-        }
-        
         body {
             font-family: 'Inter', system_ui, sans-serif;
         }
@@ -23,31 +19,10 @@
             letter-spacing: -0.025em;
         }
 
-        .metric-card {
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .section-header {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            color: #71717a;
-        }
-
         .elite-card {
             background: #111113;
             border: 1px solid #27272a;
             border-radius: 20px;
-        }
-
-        .nav-active {
-            background-color: #18181b;
-            color: white;
-            border-radius: 12px;
         }
 
         .lead-row {
@@ -58,10 +33,22 @@
             background-color: #18181b;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .stage-badge {
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .stage-badge:hover {
+            filter: brightness(1.1);
+        }
+
+        .action-btn {
+            opacity: 0.6;
+            transition: opacity 0.1s ease;
+        }
+        
+        .lead-row:hover .action-btn {
+            opacity: 1;
         }
     </style>
 </head>
@@ -71,7 +58,6 @@
     <div class="border-b border-zinc-800 bg-[#0A0A0A]/95 sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-x-8">
-                <!-- Logo -->
                 <div class="flex items-center gap-x-3">
                     <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center">
                         <i class="fa-solid fa-robot text-white text-xl"></i>
@@ -80,35 +66,21 @@
                         <span class="font-display text-2xl font-semibold tracking-[-1.5px]">Agentbase</span>
                     </div>
                 </div>
-
-                <!-- Navigation -->
+                
                 <div class="flex items-center gap-x-1 text-sm">
-                    <a href="#" class="px-4 py-2 nav-active flex items-center gap-x-2 text-sm font-medium">
+                    <a href="#" class="px-4 py-2 bg-zinc-900 text-white flex items-center gap-x-2 text-sm font-medium rounded-xl">
                         <i class="fa-solid fa-chart-line w-4"></i>
                         <span>Dashboard</span>
-                    </a>
-                    <a href="#" class="px-4 py-2 hover:bg-zinc-900 flex items-center gap-x-2 text-sm font-medium text-zinc-400 hover:text-zinc-200 rounded-xl">
-                        <i class="fa-solid fa-users w-4"></i>
-                        <span>Clientes</span>
-                    </a>
-                    <a href="#" class="px-4 py-2 hover:bg-zinc-900 flex items-center gap-x-2 text-sm font-medium text-zinc-400 hover:text-zinc-200 rounded-xl">
-                        <i class="fa-solid fa-industry w-4"></i>
-                        <span>Industrias</span>
                     </a>
                 </div>
             </div>
 
-            <div class="flex items-center gap-x-4">
-                <!-- User -->
-                <div class="flex items-center gap-x-3">
-                    <div class="text-right">
-                        <div class="text-sm font-medium">Luis Palacios</div>
-                        <div class="text-[10px] text-zinc-500">Fundador</div>
-                    </div>
-                    <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center text-sm font-semibold border border-zinc-700">
-                        LP
-                    </div>
+            <div class="flex items-center gap-x-3">
+                <div class="text-right">
+                    <div class="text-sm font-medium">Luis Palacios</div>
+                    <div class="text-[10px] text-zinc-500">Fundador</div>
                 </div>
+                <div class="w-9 h-9 bg-zinc-800 rounded-2xl flex items-center justify-center text-sm font-semibold border border-zinc-700">LP</div>
             </div>
         </div>
     </div>
@@ -133,7 +105,51 @@
 
         <!-- Key Metrics -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-            
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">LEADS ACTIVOS</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-leads">0</div>
+                    </div>
+                    <i class="fa-solid fa-users text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">REUNIONES</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-meetings">0</div>
+                    </div>
+                    <i class="fa-solid fa-calendar-check text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">CIERRES</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-closes">0</div>
+                    </div>
+                    <i class="fa-solid fa-handshake text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">TASA CONVERSIÓN</div>
+                        <div class="text-4xl font-semibold mt-3 tracking-tighter text-emerald-400" id="metric-conversion">0%</div>
+                    </div>
+                    <i class="fa-solid fa-chart-line text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
+            <div class="elite-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-xs font-medium text-zinc-400">VALOR PIPELINE</div>
+                        <div class="text-3xl font-semibold mt-3 tracking-tighter text-emerald-400" id="metric-revenue">$0</div>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign text-emerald-500 text-2xl opacity-70"></i>
+                </div>
+            </div>
             <div class="elite-card p-6">
                 <div class="flex justify-between items-start">
                     <div>
@@ -144,169 +160,64 @@
                     <i class="fa-solid fa-bullseye text-emerald-500 text-2xl opacity-70"></i>
                 </div>
             </div>
-
-            <div class="elite-card p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-xs font-medium text-zinc-400">LEADS ACTIVOS</div>
-                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-leads">47</div>
-                        <div class="text-emerald-400 text-xs mt-1">+8 esta semana</div>
-                    </div>
-                    <i class="fa-solid fa-users text-emerald-500 text-2xl opacity-70"></i>
-                </div>
-            </div>
-
-            <div class="elite-card p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-xs font-medium text-zinc-400">REUNIONES</div>
-                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-meetings">12</div>
-                        <div class="text-emerald-400 text-xs mt-1">Esta semana</div>
-                    </div>
-                    <i class="fa-solid fa-calendar-check text-emerald-500 text-2xl opacity-70"></i>
-                </div>
-            </div>
-
-            <div class="elite-card p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-xs font-medium text-zinc-400">CIERRES</div>
-                        <div class="text-4xl font-semibold mt-3 tracking-tighter" id="metric-closes">3</div>
-                        <div class="text-emerald-400 text-xs mt-1">Este mes</div>
-                    </div>
-                    <i class="fa-solid fa-handshake text-emerald-500 text-2xl opacity-70"></i>
-                </div>
-            </div>
-
-            <div class="elite-card p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-xs font-medium text-zinc-400">TASA CONVERSIÓN</div>
-                        <div class="text-4xl font-semibold mt-3 tracking-tighter text-emerald-400" id="metric-conversion">24%</div>
-                    </div>
-                    <i class="fa-solid fa-chart-line text-emerald-500 text-2xl opacity-70"></i>
-                </div>
-            </div>
-
-            <div class="elite-card p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-xs font-medium text-zinc-400">INGRESOS POTENCIALES</div>
-                        <div class="text-3xl font-semibold mt-3 tracking-tighter text-emerald-400" id="metric-revenue">$449k</div>
-                    </div>
-                    <i class="fa-solid fa-dollar-sign text-emerald-500 text-2xl opacity-70"></i>
-                </div>
-            </div>
         </div>
 
-        <div class="grid lg:grid-cols-12 gap-6">
-            
-            <!-- Pipeline -->
-            <div class="lg:col-span-7">
-                <div class="flex items-center justify-between mb-4 px-1">
-                    <div class="section-header">PIPELINE ACTIVO</div>
-                    <div class="text-xs text-zinc-400">47 leads • 3 esta semana</div>
-                </div>
-                
-                <div class="elite-card overflow-hidden">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-zinc-800 text-xs text-zinc-400">
-                                <th class="text-left py-3 px-6 font-medium">Lead</th>
-                                <th class="text-left py-3 px-4 font-medium">Industria</th>
-                                <th class="text-left py-3 px-4 font-medium">Etapa</th>
-                                <th class="text-right py-3 px-6 font-medium">Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pipeline-body" class="text-sm">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
+        <!-- Pipeline -->
+        <div class="lg:col-span-7">
+            <div class="flex items-center justify-between mb-4 px-1">
+                <div class="text-xs font-semibold tracking-[0.5px] text-zinc-400">PIPELINE ACTIVO</div>
+                <div class="flex items-center gap-x-3">
+                    <input id="search-input" type="text" placeholder="Buscar lead..." 
+                           class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-1.5 text-sm w-64 focus:outline-none focus:border-emerald-500">
                 </div>
             </div>
-
-            <!-- Right Column -->
-            <div class="lg:col-span-5 space-y-6">
-                
-                <!-- Weekly Focus -->
-                <div>
-                    <div class="section-header mb-4 px-1">ENFOQUE SEMANAL</div>
-                    <div class="elite-card p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <div class="font-semibold">Clínicas y Consultorios</div>
-                                <div class="text-xs text-zinc-400">Semana actual • 8 leads</div>
-                            </div>
-                            <div class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full">Activo</div>
-                        </div>
-                        
-                        <div class="w-full bg-zinc-800 rounded-full h-2 mb-2">
-                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 65%"></div>
-                        </div>
-                        <div class="text-xs text-zinc-400">5/10 clientes objetivo</div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div>
-                    <div class="section-header mb-4 px-1">ACTIVIDAD RECIENTE</div>
-                    <div class="elite-card divide-y divide-zinc-800 text-sm">
-                        <div class="px-6 py-4 flex gap-x-4">
-                            <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                                <i class="fa-solid fa-user text-xs"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm">Nueva reunión agendada con <span class="font-medium">Dr. Martínez</span></div>
-                                <div class="text-xs text-zinc-400 mt-0.5">Hace 2 horas</div>
-                            </div>
-                        </div>
-                        <div class="px-6 py-4 flex gap-x-4">
-                            <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex-shrink-0 flex items-center justify-center">
-                                <i class="fa-solid fa-check text-xs"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="text-sm">Propuesta enviada a <span class="font-medium">Clínica San José</span></div>
-                                <div class="text-xs text-zinc-400 mt-0.5">Ayer</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="elite-card overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-zinc-800 text-xs text-zinc-400">
+                            <th class="text-left py-3 px-6 font-medium">Lead</th>
+                            <th class="text-left py-3 px-4 font-medium">Industria</th>
+                            <th class="text-left py-3 px-4 font-medium">Etapa</th>
+                            <th class="text-right py-3 px-4 font-medium">Valor</th>
+                            <th class="text-right py-3 px-6 font-medium w-20">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pipeline-body" class="text-sm">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // Sample data
-        let leads = [
+        // Load from localStorage or use default data
+        let leads = JSON.parse(localStorage.getItem('agentbase_leads')) || [
             { id: 1, name: "Dr. Roberto Hernández", company: "Clínica Vida", industry: "Clínicas", stage: "Reunión", value: 14990, date: "2026-02-12" },
             { id: 2, name: "María González", company: "Inmobiliaria Norte", industry: "Inmobiliaria", stage: "Propuesta", value: 14990, date: "2026-02-10" },
             { id: 3, name: "Restaurante El Patio", company: "El Patio", industry: "Restaurantes", stage: "Negociación", value: 14990, date: "2026-02-08" },
             { id: 4, name: "Clínica Dental Sonrisa", company: "Sonrisa", industry: "Clínicas", stage: "Cerrado", value: 14990, date: "2026-02-05" },
         ];
 
-        function renderPipeline(filteredLeads = leads) {
-            const tbody = document.getElementById('pipeline-body');
-            tbody.innerHTML = '';
+        const stages = ["Contactado", "Respondió", "Reunión", "Propuesta", "Negociación", "Cerrado"];
 
-            filteredLeads.forEach(lead => {
-                const row = document.createElement('tr');
-                row.className = `lead-row border-b border-zinc-800 last:border-0`;
-                
-                row.innerHTML = `
-                    <td class="py-4 px-6">
-                        <div class="font-medium">${lead.name}</div>
-                        <div class="text-xs text-zinc-400">${lead.company}</div>
-                    </td>
-                    <td class="py-4 px-4">
-                        <span class="px-3 py-1 text-xs rounded-full bg-zinc-800">${lead.industry}</span>
-                    </td>
-                    <td class="py-4 px-4">
-                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getStageColor(lead.stage)}">${lead.stage}</span>
-                    </td>
-                    <td class="py-4 px-6 text-right font-medium">$${lead.value.toLocaleString()}</td>
-                `;
-                tbody.appendChild(row);
-            });
+        function saveLeads() {
+            localStorage.setItem('agentbase_leads', JSON.stringify(leads));
+        }
+
+        function updateMetrics() {
+            const total = leads.length;
+            const meetings = leads.filter(l => l.stage === "Reunión").length;
+            const closes = leads.filter(l => l.stage === "Cerrado").length;
+            const conversion = total > 0 ? Math.round((closes / total) * 100) : 0;
+            const pipelineValue = leads.reduce((sum, l) => sum + l.value, 0);
+
+            document.getElementById('metric-leads').textContent = total;
+            document.getElementById('metric-meetings').textContent = meetings;
+            document.getElementById('metric-closes').textContent = closes;
+            document.getElementById('metric-conversion').textContent = conversion + "%";
+            document.getElementById('metric-revenue').textContent = "$" + (pipelineValue / 1000).toFixed(0) + "k";
         }
 
         function getStageColor(stage) {
@@ -321,44 +232,122 @@
             return colors[stage] || 'bg-zinc-700 text-zinc-300';
         }
 
-        function updateMetrics() {
-            document.getElementById('metric-leads').textContent = leads.length;
-            document.getElementById('metric-meetings').textContent = leads.filter(l => l.stage === 'Reunión').length;
-            document.getElementById('metric-closes').textContent = leads.filter(l => l.stage === 'Cerrado').length;
+        function changeStage(id) {
+            const lead = leads.find(l => l.id === id);
+            if (!lead) return;
+
+            const currentIndex = stages.indexOf(lead.stage);
+            const nextIndex = (currentIndex + 1) % stages.length;
+            
+            lead.stage = stages[nextIndex];
+            saveLeads();
+            renderPipeline();
+            updateMetrics();
+        }
+
+        function deleteLead(id) {
+            if (!confirm("¿Eliminar este lead?")) return;
+            leads = leads.filter(l => l.id !== id);
+            saveLeads();
+            renderPipeline();
+            updateMetrics();
+        }
+
+        function editLead(id) {
+            const lead = leads.find(l => l.id === id);
+            if (!lead) return;
+
+            const newName = prompt("Nombre del lead:", lead.name);
+            if (newName === null) return;
+
+            const newCompany = prompt("Empresa:", lead.company);
+            const newIndustry = prompt("Industria:", lead.industry);
+
+            lead.name = newName || lead.name;
+            lead.company = newCompany || lead.company;
+            lead.industry = newIndustry || lead.industry;
+
+            saveLeads();
+            renderPipeline();
+        }
+
+        function renderPipeline(filteredLeads = leads) {
+            const tbody = document.getElementById('pipeline-body');
+            tbody.innerHTML = '';
+
+            filteredLeads.forEach(lead => {
+                const row = document.createElement('tr');
+                row.className = `lead-row border-b border-zinc-800 last:border-0`;
+
+                row.innerHTML = `
+                    <td class="py-4 px-6">
+                        <div class="font-medium">${lead.name}</div>
+                        <div class="text-xs text-zinc-400">${lead.company}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 text-xs rounded-full bg-zinc-800">${lead.industry}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span onclick="changeStage(${lead.id})" 
+                              class="stage-badge px-3 py-1 text-xs font-medium rounded-full ${getStageColor(lead.stage)}">
+                            ${lead.stage}
+                        </span>
+                    </td>
+                    <td class="py-4 px-4 text-right font-medium">$${lead.value.toLocaleString()}</td>
+                    <td class="py-4 px-6 text-right">
+                        <div class="flex items-center justify-end gap-x-1">
+                            <button onclick="editLead(${lead.id})" class="action-btn text-zinc-400 hover:text-white px-1">
+                                <i class="fa-solid fa-edit text-xs"></i>
+                            </button>
+                            <button onclick="deleteLead(${lead.id})" class="action-btn text-zinc-400 hover:text-red-400 px-1">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
         }
 
         function addLead() {
             const name = prompt("Nombre del lead:");
             if (!name) return;
-            
-            const company = prompt("Empresa / Clínica:");
-            const industry = prompt("Industria (Clínicas, Restaurantes, Inmobiliaria):");
-            
+
+            const company = prompt("Empresa / Clínica:") || "Sin empresa";
+            const industry = prompt("Industria (Clínicas, Restaurantes, Inmobiliaria, etc.):") || "Otro";
+
             leads.unshift({
                 id: Date.now(),
                 name: name,
-                company: company || "Sin empresa",
-                industry: industry || "Otro",
+                company: company,
+                industry: industry,
                 stage: "Contactado",
                 value: 14990,
                 date: new Date().toISOString().split('T')[0]
             });
-            
+
+            saveLeads();
             renderPipeline();
             updateMetrics();
         }
 
-        // Initialize
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', () => {
+                const term = searchInput.value.toLowerCase();
+                const filtered = leads.filter(lead => 
+                    lead.name.toLowerCase().includes(term) || 
+                    lead.company.toLowerCase().includes(term) ||
+                    lead.industry.toLowerCase().includes(term)
+                );
+                renderPipeline(filtered);
+            });
+        }
+
         function init() {
             renderPipeline();
             updateMetrics();
-            
-            // Simple search
-            const searchInput = document.createElement('input');
-            searchInput.placeholder = "Buscar lead...";
-            searchInput.className = "bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2 text-sm w-64";
-            
-            // For demo purposes, we'll keep it simple
+            setupSearch();
         }
 
         window.onload = init;
